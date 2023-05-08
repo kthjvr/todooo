@@ -1,0 +1,231 @@
+:root {
+  --bg-color: #FEE3EC;
+  --light-color: #F9C5D5;
+  --sub-color: #F999B7;
+  --main-text-color: #F2789F;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #FEE3EC;
+  opacity: 1;
+  background-image:  radial-gradient(#F9C5D5 2px, transparent 2px), radial-gradient(#F9C5D5 2px, #FEE3EC 2px);
+  background-size: 80px 80px;
+  background-position: 0 0,40px 40px;
+}
+
+.container {
+  display: flex;
+  justify-content: right;
+  height: 100vh;
+  width: auto;
+  gap: 20px;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 78px;
+  height: 100vh;
+  background-color: var(--light-color);
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s;
+}
+
+.main {
+  width: calc(100% - 78px);
+  height: 100vh;
+  padding: 20px;
+  color: var(--main-text-color);
+  transition: all 0.2s;
+}
+
+.icon {
+  width: 50px;
+  height: 50px;
+  background-color: var(--sub-color);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-size: 1rem;
+  padding: 15px;
+  gap: 15px;
+  transition: all 0.2s;
+}
+
+.icon:hover {
+  background-color: var(--main-text-color) !important;
+  cursor: pointer;
+}
+
+.menu-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+.menu-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  padding-top: 15px;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+.icon-logout {
+  width: 100%;
+  height: 60px;
+  background-color: var(--sub-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.icon-logout:hover {
+  background-color: var(--main-text-color);
+  cursor: pointer;
+}
+
+.main h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.logout-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--sub-color);
+  align-items: center;
+  font-size: 0.9rem;
+  gap: 10px;
+}
+
+.logout-container #logout-photo {
+  width: 45px;
+  height: 45px;
+  border-radius: 10px;
+}
+
+#user-container {
+  display: flex;
+  flex-direction: column;
+  gap: -5px;
+}
+
+#user-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+#user-role {
+  font-size: 0.7rem;
+  font-weight: 400;
+}
+
+img.love-cat{
+  width: 100px;
+}
+
+h3.greetings{
+  display: contents;
+  font-size:x-large;
+}
+
+.col {
+  height: 100%;
+  padding: 10px;
+}
+
+@media (min-width: 992px) {
+  .col {
+    height: 500px;
+  }
+}
+
+.container-fluid .row .col-md-3 .border {
+  max-height: 500vh;
+  overflow: auto;
+}
+
+.summary-box{
+  background-color: var(--light-color); 
+  border-radius: 29px; 
+  border: 1px solid var(--light-color); 
+  color: white; 
+  font-size: 15px; 
+  padding: 10px 45px; 
+  cursor: pointer; 
+  transition: 0.3s; 
+  }
+  
+  .Example-btn1:hover{ 
+  background-color: white; 
+  color: #081F2D; 
+  border-color: #081F2D; 
+  transition: 0.3s; 
+ }
+
+ .sort-btn{ 
+  background-color: var(--dark-purple); 
+  border: none; 
+  border-radius: 6px; 
+  color: #fff;
+  flex-grow: 1;
+  font-family: SFProText-Regular, Helvetica, Arial, sans-serif;
+  font-size: 15px; 
+  height: 36px; 
+  line-height: 20px; 
+  margin-top: 2vh;
+  margin-left: 8px;
+  margin-right: 6px; 
+  min-width: 185px; 
+  padding: 0 12px 0 12px; 
+  transition: 0.3s; 
+  cursor: pointer; 
+  } 
+  
+  .sort-btn:hover{
+  background-color: var(--purple); 
+  color: #050505; 
+  font-size: 15px; 
+  transition: 0.3s; 
+  } 
+
+  
+  div.label{
+    background-color: var(--pink); 
+    border: none; 
+    border-radius: 6px; 
+    color: #fff; 
+    flex-grow: 1; 
+    font-family: SFProText-Regular, Helvetica, Arial, sans-serif; 
+    font-size: 15px; 
+    height: 300px; 
+    line-height: 20px; 
+    margin-left: 8px; 
+    margin-right: 6px; 
+    /* min-width: 50px;  */
+    width: 100px;
+    padding: 0 16px 0 16px; 
+    color:white; 
+    cursor: pointer; 
+    display: inherit;
+  }

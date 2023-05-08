@@ -1,0 +1,762 @@
+:root {
+  --bg-color: #EEEEEE;
+  --light-color: #787A91;
+  --sub-color: #0F044C;
+  --main-text-color: #141E61;
+  --off-white: #F1F6F9;
+  }
+
+  img.love-cat{
+    width: 100px;
+  }
+
+  h3.greetings{
+    display: contents;
+    font-size:x-large;
+    color: var(--sub-color);
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropbtn {
+    background-color: none;
+    color: #333;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    width: 17vh;
+    margin-left: -3vh;
+  }
+  
+  .dropdown-content a {
+    color: #333;
+    background-color: var(--bg-color);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+  }
+
+  /* Style the dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: var(--light-color);
+  color: #333;
+}
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  
+
+
+/* ---------------- THIS IS FOR TABLE ------------------------------------------------------------------------- */
+.table-container{
+  max-height: 700px; /* Set the maximum height for the container */
+  max-width: 500vh;
+  overflow-x: hidden; /* Add vertical scroll bar */
+  overflow-y: auto;
+  position: relative; /* Set the position to relative */
+  height: 80vh;
+  width: 123vh;
+  left: 25vh;
+  background-color: aliceblue;
+  color: #0F044C;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  background-color: aliceblue;
+  width: 1200px;
+  color: #0F044C;
+  }
+
+th {
+  position: sticky;
+  top: 0;
+  background-color: var(--light-color);
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #212A3E;
+  font-size: large;
+  color: var(--sub-color);
+  opacity: 1;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #212A3E;
+  color: var(--sub-color);
+  cursor: default;
+}
+
+td{
+  font-size: medium;
+  color: var(--sub-color);
+}
+
+.open-menu{
+  cursor: pointer;
+}
+
+td h3{
+  font-size: medium;
+  color: var(--sub-color);
+}
+
+td a i{
+  font-size: medium;
+  color: var(--sub-color);
+}
+
+td p{
+  font-size: medium;
+  color: var(--sub-color);
+}
+
+
+p.description{
+  overflow: hidden;
+  max-width: 300px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--main-text-color);
+  opacity: 0.75;
+}
+
+td.category{
+  overflow: hidden;
+  max-width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--sub-color);
+}
+
+/* ---------------- THIS IS FOR FLAG COLORS ------------------------------------------------------------------------- */
+  
+   td.flag i.low{
+    color: #BBE1F8;
+   }
+   td.flag i.medium{
+    color: #F1D686;
+   }
+   td.flag i.high{
+    color: #F79563;
+   }
+   td.flag i.extreme{
+    color: #FF6961;
+   }
+
+
+/* ---------------- THIS IS FOR POP-UP DISPLAY ------------------------------------------------------------------------- */
+
+.popup {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+/* Popup content */
+.popup-content {
+  background-color: var(--off-white);
+  max-width: 65rem;
+  height: 50rem;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.popup-content h2{
+  color: var(--main-text-color);
+}
+
+/* Close button */
+.close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #f00;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.center,.start-btn{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.start-btn a{
+  font-size: 22px;
+  background: white;
+  color: #02242b;
+  padding: 15px 18px;
+  border-radius: 5px;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+
+}
+.modal-box{
+  top: 40%;
+  opacity: 0;
+  visibility: hidden;
+  background: var(--off-white);
+  height: auto;
+  width: 480px;
+  margin-top:140px;
+  padding: 18px 10px;
+  border-radius: 5px;
+  box-shadow: 5px 5px 30px rgba(0,0,0,.2);
+}
+
+.start-btn.show-modal{
+  opacity: 0;
+  visibility: hidden;
+}
+.modal-box.show-modal{
+  top: 50%;
+  opacity: 1;
+  visibility: visible;
+  transition: .4s;
+}
+.modal-box .fa-times{
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--off-white);
+  height: 40px;
+  width: 40px;
+  line-height: 40px;
+  margin: 10px;
+
+  color: var(--sub-color);
+  font-size: 18px;
+  border-radius: 100%;
+  text-align: center;
+  cursor: pointer;
+}
+.fa-times:hover{
+  font-size: 22px;
+}
+
+
+.form_container{
+  background: var(--off-white);
+  padding: 30px;
+  margin-top: 20px;
+  border-radius: 3px;
+}
+
+.form_container .form_item{
+  margin-bottom: 25px;
+}
+
+.form_container .form_wrap.form_grp{
+  display: flex;
+}
+
+.form_container .form_wrap.form_grp .form_item{
+  width: 50%;
+}
+
+.form_container .form_wrap.form_grp .form_item:first-child{
+  margin-right: 4%;
+}
+
+.form_container .form_item label{
+  color: var(--main-text-color);
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.form_container .form_item input,
+.form_container .form_item select{
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #dadce0;
+  border-radius: 3px;
+  color: var(--main-text-color);
+}
+
+select option{
+  color: var(--main-text-color);
+}
+
+.form_item textarea{
+  width: 200%;
+  height: 20vh;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #dadce0;
+  border-radius: 3px;
+  color: var(--main-text-color);
+}
+ 
+.form_container .btn input[type="submit"]{
+  background: var(--light-color);
+  border: 1px solid var(--light-color);
+  padding: 10px;
+  width: 30%;
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--main-text-color);
+}
+
+.form_container .btn input[type="submit"]:hover{
+  background-color: var(--sub-color);
+}
+
+.form_container .btn input[type="close"].close-button{
+  background: lightblue;
+  border: 1px solid lightblue;
+  padding: 10px;
+  width: 30%;
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--main-text-color);
+  text-align: center;
+}
+
+.form_container .btn input[type="close"].close-button:hover{
+  background-color: blue;
+}
+
+.form_container .btn input[type="submit"].delete-button{
+  background: lightcoral;
+  border: 1px solid lightcoral;
+  padding: 10px;
+  width: 30%;
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--main-text-color);
+  text-align: center;
+}
+
+.form_container .btn input[type="submit"].delete-button:hover{
+  background-color: red;
+}
+
+.form_container .btn input[type="submit"].back-button{
+  background: lightblue;
+  border: 1px solid lightblue;
+  padding: 10px;
+  width: 30%;
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--main-text-color);
+  text-align: center;
+}
+
+.form_container .btn input[type="submit"].back-button:hover{
+  background-color: blue;
+}
+
+
+
+
+
+
+/* ---------------- THIS IS FOR COMPLETE BUTTON RADIO ------------------------------------------------------------------------- */
+/* Circle radio button
+input[type="radio"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #aaa;
+  cursor: pointer;
+  margin-left: 70px;
+  /* margin-right: 10px; */
+/* } */
+
+/* Circle radio button - checked */
+/* input[type="radio"]:checked {
+  background-color: #2196F3;
+  border-color: #2196F3;
+} */ 
+/* ---------------- THIS IS FOR MAIN AND SIDEBAR ------------------------------------------------------------------------- */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+  /* font-family: 'Merriweather', serif; */
+}
+
+body {
+  background-color: #EEEEEE;
+  /* opacity: 1; */
+  /* background-image:  radial-gradient(#0F044C 0.9px, transparent 0.9px), radial-gradient(#0F044C 0.9px, #EEEEEE 0.9px); */
+  /* background-size: 36px 36px;
+  background-position: 0 0,18px 18px; */
+}
+
+.container {
+  display: flex;
+  justify-content: right;
+  height: 100vh;
+  width: auto;
+  gap: 20px;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 78px;
+  height: 100vh;
+  background-color: var(--light-color);
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s;
+}
+
+.main {
+  width: calc(100% - 78px);
+  height: 100vh;
+  padding: 20px;
+  color: var(--main-text-color);
+  transition: all 0.2s;
+}
+
+.icon {
+  width: 50px;
+  height: 50px;
+  background-color: var(--sub-color);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-size: 1rem;
+  padding: 15px;
+  gap: 15px;
+  transition: all 0.2s;
+}
+
+.icon:hover {
+  background-color: var(--main-text-color) !important;
+  cursor: pointer;
+}
+
+.menu-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+.menu-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  padding-top: 15px;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+.icon-logout {
+  width: 100%;
+  height: 60px;
+  background-color: var(--sub-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.icon-logout:hover {
+  background-color: var(--main-text-color);
+  cursor: pointer;
+}
+
+.main h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.logout-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--sub-color);
+  align-items: center;
+  font-size: 0.9rem;
+  gap: 10px;
+}
+
+.logout-container #logout-photo {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+
+#user-container {
+  display: flex;
+  flex-direction: column;
+  gap: -5px;
+}
+
+#user-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+#user-role {
+  font-size: 0.7rem;
+  font-weight: 400;
+}
+
+div.container-fluid {
+  width: 100%;
+  margin: 0 auto;
+  padding-right: 50px;
+  padding-left: 50px;
+  margin-top: 8vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+div.container-side a{
+  text-decoration: none;
+  width: 500vh;
+}
+
+/* ---------------- THIS IS FOR SORT BUTTON ------------------------------------------------------------------------- */
+
+.sort-btn{ 
+  background-color: var(--sub-color); 
+  border: none; 
+  border-radius: 6px; 
+  color: var(--bg-color);
+  flex-grow: 1;
+  font-size: 15px; 
+  height: 42px; 
+  line-height: 20px; 
+  margin-top: 2vh;
+  margin-left: 8px;
+  margin-right: 6px; 
+  min-width: 185px; 
+  padding: 0 12px 0 12px; 
+  transition: 0.3s; 
+  cursor: pointer; 
+} 
+
+.sort-btn:hover{
+  background-color: var(--main-text-color); 
+  color: var(--bg-color); 
+  font-size: 15px; 
+  transition: 0.3s; 
+} 
+
+/* ---------------- THIS IS FOR TABLE ------------------------------------------------------------------------- */
+
+.container2 {
+  border: none;
+  padding: 10px;
+  position: fixed;
+  display: block;
+  margin-top: -45vh;
+  margin-right: 2vh;
+  z-index: 1;
+  
+}
+
+.container2 button{
+  color: aliceblue;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+button {
+  display: block;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+
+  /* ---------------- THIS IS FOR SUMMARY BOX IN HEADER ------------------------------------------------------------------------- */
+
+/* .summary-box{
+  background-color: var(--sub-color);
+  border-radius: 29px; 
+  border: 1px solid var(--sub-color); 
+  color: white; 
+  padding: 10px 10px 10px 10px; 
+  cursor: pointer; 
+  transition: 0.3s; 
+  position: inherit;
+  display: inline-block;
+  width: 63vh;
+  margin-left: 10vh;
+} */
+
+/* div.summary-btn{ 
+  background-color: var(--sub-color); 
+  border: none; 
+  border-radius: 6px; 
+  color: #fff; 
+  flex-grow: 1; 
+  font-family: 'Merriweather', serif;
+  font-size: 15px; 
+  height: 70px; 
+  margin-left: 8px; 
+  margin-right: 6px; 
+  min-width: 50px; 
+  width: 100px;
+  padding: 0 16px 0 16px; 
+  color:white; 
+  cursor: pointer; 
+  display: inherit;
+} 
+      
+.summary-btn:hover{ 
+background-color: var(--light-color); 
+cursor: pointer; 
+}  */
+
+
+.container-1 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f5f5f5;
+  width: 80vh;
+  margin-left: 5vh;
+  /* margin-top: -10vh; */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(20% - 10px);
+  height: 80px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: auto;
+  margin-bottom: 10px;
+  color: var(--sub-color);
+}
+
+.count {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--sub-color);
+}
+
+/* ---------------- THIS IS FOR ADD BUTTON FOR TASKS ------------------------------------------------------------------------- */
+.add-btn{
+font-family: Roboto, sans-serif;
+font-weight: 900;
+font-size: 15px;
+color: aliceblue;
+background-color: var(--sub-color);
+padding: 10px 30px;
+border: solid var(--sub-color) 2px;
+box-shadow: rgb(0, 0, 0) 0px 0px 0px 0px;
+border-radius: 50px;
+transition : 1000ms;
+transform: translateY(0);
+display: flex;
+flex-direction: row;
+align-items: center;
+cursor: pointer;
+width: auto;
+margin-left: 20rem;
+margin-bottom: -4rem;
+margin-top: 2rem;
+}
+
+.add-btn:hover{
+transition : 1000ms;
+padding: 10px 50px;
+transform : translateY(-0px);
+background-color: var(--bg-color);
+color: var(--main-text-color);
+border: solid 2px var(--sub-color);
+}
+
+iframe {
+  width: 57rem;
+  height: 45rem;
+  border: none;
+  border-radius: 20px;
+}
+      
+/* Media queries for smaller screen sizes */
+
+@media screen and (max-width: 768px) {
+.container {
+flex-wrap: wrap;
+flex-direction: column;
+align-items: stretch;
+width: 30vh;
+}
+
+.box {
+width: 100%;
+}
+}
+
+@media screen and (max-width: 576px) {
+.label {
+font-size: 14px;
+}
+
+.count {
+font-size: 24px;
+}
+}
+      
+
