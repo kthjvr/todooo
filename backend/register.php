@@ -1,9 +1,8 @@
 <?php
-// Database connection
-$db_host = 'localhost'; // Change to your database hostname
-$db_user = 'root'; // Change to your database username
-$db_pass = ''; // Change to your database password
-$db_name = 'getItDone'; // Change to your database name
+$db_host = 'localhost'; 
+$db_user = 'root'; 
+$db_pass = ''; 
+$db_name = 'getItDone'; 
 
 $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
 if (!$conn) {

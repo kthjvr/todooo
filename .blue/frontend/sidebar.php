@@ -176,6 +176,13 @@ $_SESSION['username'];
           
       ?>
 
+      <!-- THIS IS FOR PROFILE MODAL -->
+    <div id="account" class="popup">
+      <div class="popup-content" id="account-details">
+        </div>
+      </div>
+    </div>
+
 
   <script src="../javascript/script.js"></script>
     <script>
@@ -184,3 +191,34 @@ $_SESSION['username'];
       gtag('js', new Date());
       gtag('config', 'G-LLWL5N9CSM');
   </script>
+
+<!-- THIS IS FOR DISPLAYING TASK DETAILS -->
+<script>
+  $('.open-menu').on('click', function() {
+      // Get the task ID from the row
+      var taskID = $(this).closest('tr').find('.task-id').text();
+
+      // Send an AJAX request to retrieve the details of the task
+      $.ajax({
+        url: '../view/account.php',
+        method: 'POST',
+        data: { taskID: taskID },
+        success: function(response) {
+          // Display the task details in the pop-up window
+          $('#account-details').html(response);
+          $('#account').show();
+        }
+      });
+  });
+</script>
+
+<script>
+  var popup = document.getElementById("account"); // Get the pop-up and all buttons that open it
+  var buttons = document.getElementsId("logout-photo");
+
+  for (var i = 0; i < buttons.length; i++) { // Loop through all buttons and add a click event listener to each one
+    buttons[i].addEventListener("click", function() {
+      popup.style.display = "block";
+    });
+  }
+</script>

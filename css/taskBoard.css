@@ -518,13 +518,13 @@ body {
   background-color: var(--sub-color);
   align-items: center;
   font-size: 0.9rem;
-  gap: 10px;
+  /* gap: 10px; */
 }
 
 .logout-container #logout-photo {
   width: 45px;
   height: 45px;
-  border-radius: 50%;
+  /* border-radius: 50%; */
 }
 
 #user-container {
@@ -608,10 +608,17 @@ label {
   margin-bottom: 5px;
 }
 
-button {
+.container2 button {
   display: block;
   margin-bottom: 5px;
   width: 100%;
+}
+
+.open-account{
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
 }
 
 

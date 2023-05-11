@@ -121,6 +121,13 @@ mysqli_close($conn);
   </div>
 </div>
 
+<!-- THIS IS FOR ACCOUNT MODAL -->
+<div id="account" class="popup">
+  <div class="popup-content" id="account-details">
+    </div>
+  </div>
+</div>
+
 <!-- THIS IS FOR ADD TASK MODAL -->
 <div id="popup" class="popup">
   <div class="popup-content">

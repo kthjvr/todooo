@@ -1,9 +1,9 @@
 <?php
 // Connect to the database
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "getItDone";
+$servername = "localhost"; // server name
+$username = "root"; // username
+$password = ""; // password
+$dbname = "getItDone"; // database name
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 
 // Check connection
@@ -17,8 +17,8 @@ mysqli_close($conn);
 
 <?php
 
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-if (!$conn) { die("Connection failed: " . mysqli_connect_error()); }
+$conn = mysqli_connect($servername, $username, $password, $dbname);  // Connect to the database again
+if (!$conn) { die("Connection failed: " . mysqli_connect_error()); } // Check connection again
             
 session_start();
 $id = $_SESSION['id'];
@@ -28,7 +28,7 @@ $taskID = $_POST['taskID'];
 
 
 // Retrieve the task details from the database based on the task ID
-$info_sql ="SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND taskID='$taskID' AND mytasks.trash='0' AND mytasks.currentStatus='Completed'";
+$info_sql ="SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=mytasks.id AND taskID='$taskID' AND mytasks.trash='0' AND mytasks.currentStatus!='Completed'";
 // $info_sql = "SELECT * FROM MyTasks WHERE currentStatus!='Completed' AND taskID='$taskID'"; //retrieve info from db
     $info_result = mysqli_query($conn, $info_sql);
     
@@ -81,9 +81,16 @@ $info_sql ="SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=my
                         </div>';
                 echo '</div>';
 
+                echo '<div class="form_wrap form_grp">';
+                echo '<div class="form_item"">';
+                    echo '<label for="currentStatus">Status</label> <input type="text" value="'.$row["currentStatus"].'" readonly />';
+                echo '</div>';
+                echo '</div>';
+
                 echo '<div class="btn">
                       <input value="Edit" type="submit" class="action-menu">
                       <input value="Close" type="close" class="close-button" readonly>
+                      <input value="Delete" type="submit" class="delete-button">
                       </div>';
 
               echo '</form>';

@@ -1,5 +1,4 @@
 <?php
-// We need to use sessions, so you should always start sessions using the below code.
 session_start();
 // If the user is not logged in redirect to the login page...
 if (!isset($_SESSION['loggedin'])) {
@@ -9,7 +8,8 @@ if (!isset($_SESSION['loggedin'])) {
 $_SESSION['username'];
 $_SESSION['id'];
 $_SESSION['email'];
-$_SESSION['avatar']
+$_SESSION['avatar'];
+$_SESSION['userpassword']
 ?>
 
 <!DOCTYPE html>
@@ -91,7 +91,10 @@ $_SESSION['avatar']
         </div>
       </aside>
 
+
+
       <section class="main">
+      
 
       <?php
         // Connect to the database
@@ -177,6 +180,7 @@ $_SESSION['avatar']
       ?>
 
 
+
   <script src="../javascript/script.js"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -189,8 +193,4 @@ $_SESSION['avatar']
     var username = "<?php echo $_SESSION['username']; ?>";
     var useremail = "<?php echo $_SESSION['email']; ?>";
     var avatar = "../images/avatar/<?php echo $_SESSION['avatar']; ?>";
-  </script>
-
-  <script>
-    
   </script>

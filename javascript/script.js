@@ -6,6 +6,7 @@ const main = document.querySelector(".main");
 
 const menu_container = document.querySelector(".menu-container");
 const logout_container = document.querySelector(".logout-container");
+const account = document.querySelector("#logout-photo");
 
 const icon_logout = document.querySelector(".icon-logout");
 
@@ -175,11 +176,23 @@ const openMenu = () => {
 
   logout_container.insertBefore(user_container, logout_container.childNodes[0]);
 
+  // let account_container = document.createElement("a");
+  // account_container.id = "open-account";
+  // account_container.className = "open-account";
+  // logout_container.insertBefore(account_container, logout_container.childNodes[0]);
+
   let logout_photo = document.createElement("img");
   logout_photo.id = "logout-photo";
   logout_photo.src = avatar;
+  logout_photo.className = "logout-photo";
+  logout_photo.style.cursor = "pointer";
   logout_container.style.paddingLeft = "15px";
+  // account_container.appendChild(logout_photo);
   logout_container.insertBefore(logout_photo, logout_container.childNodes[0]);
+
+  logout_photo.addEventListener("click", (e) => {
+    window.location.href = "../frontend/account2.php";
+  });
 
   main.style.width = "calc(100% - 250px)";
 };
