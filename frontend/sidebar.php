@@ -143,39 +143,39 @@ $_SESSION['userpassword']
           }
           
           // display the counts for each priority_stat level
-          echo "<div class='container-1'>";
-            echo "<div class='box'>";
-            echo "<span class='label'>Extreme Priority</span>";
-            echo "<span class='count'>$extreme_count</span>";
-            echo "</div>";
+          // echo "<div class='container-1'>";
+          //   echo "<div class='box'>";
+          //   echo "<span class='label'>Extreme Priority</span>";
+          //   echo "<span class='count'>$extreme_count</span>";
+          //   echo "</div>";
 
-            echo "<div class='box'>";
-            echo "<span class='label'>High Priority</span>";
-            echo "<span class='count'>$high_count</span>";
-            echo "</div>";
+          //   echo "<div class='box'>";
+          //   echo "<span class='label'>High Priority</span>";
+          //   echo "<span class='count'>$high_count</span>";
+          //   echo "</div>";
 
-            echo "<div class='box'>";
-            echo "<span class='label'>Medium Priority</span>";
-            echo "<span class='count'>$medium_count</span>";
-            echo "</div>";
+          //   echo "<div class='box'>";
+          //   echo "<span class='label'>Medium Priority</span>";
+          //   echo "<span class='count'>$medium_count</span>";
+          //   echo "</div>";
 
-            echo "<div class='box'>";
-            echo "<span class='label'>Low Priority</span>";
-            echo "<span class='count'>$low_count</span>";
-            echo "</div>";
+          //   echo "<div class='box'>";
+          //   echo "<span class='label'>Low Priority</span>";
+          //   echo "<span class='count'>$low_count</span>";
+          //   echo "</div>";
 
-            $current_date = date('Y-m-d'); // get current date
-            $sql2 = "SELECT COUNT(*) AS count FROM mytasks WHERE id = $id AND currentStatus!='Discarded' AND currentStatus!='Completed' AND endDate = '$current_date'";
-            $result = $conn->query($sql2);
+          //   $current_date = date('Y-m-d'); // get current date
+          //   $sql2 = "SELECT COUNT(*) AS count FROM mytasks WHERE id = $id AND currentStatus!='Discarded' AND currentStatus!='Completed' AND endDate = '$current_date'";
+          //   $result = $conn->query($sql2);
 
-            $row = $result->fetch_assoc();
-            $count = $row['count'];
+          //   $row = $result->fetch_assoc();
+          //   $count = $row['count'];
 
-            echo "<div class='box'>";
-            echo "<span class='label'>Today</span>";
-            echo "<span class='count'>$count</span>";
-            echo "</div>";
-          echo "</div>";
+          //   echo "<div class='box'>";
+          //   echo "<span class='label'>Today</span>";
+          //   echo "<span class='count'>$count</span>";
+          //   echo "</div>";
+          // echo "</div>";
           
       ?>
 

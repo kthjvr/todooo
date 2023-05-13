@@ -25,7 +25,7 @@ let currentToggled = null;
 
 search.addEventListener("click", (e) => {
   toggleMenu(search);
-  window.location.href = "../frontend/tasks.php";
+  window.location.href = "../frontend/tasks_v2.php";
 });
 
 dashboard.addEventListener("click", (e) => {
