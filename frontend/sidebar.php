@@ -1,5 +1,4 @@
 <?php
-// We need to use sessions, so you should always start sessions using the below code.
 session_start();
 // If the user is not logged in redirect to the login page...
 if (!isset($_SESSION['loggedin'])) {
@@ -9,7 +8,8 @@ if (!isset($_SESSION['loggedin'])) {
 $_SESSION['username'];
 $_SESSION['id'];
 $_SESSION['email'];
-$_SESSION['avatar']
+$_SESSION['avatar'];
+$_SESSION['userpassword']
 ?>
 
 <!DOCTYPE html>
@@ -91,7 +91,10 @@ $_SESSION['avatar']
         </div>
       </aside>
 
+
+
       <section class="main">
+      
 
       <?php
         // Connect to the database
@@ -140,41 +143,42 @@ $_SESSION['avatar']
           }
           
           // display the counts for each priority_stat level
-          echo "<div class='container-1'>";
-            echo "<div class='box'>";
-            echo "<span class='label'>Extreme Priority</span>";
-            echo "<span class='count'>$extreme_count</span>";
-            echo "</div>";
+          // echo "<div class='container-1'>";
+          //   echo "<div class='box'>";
+          //   echo "<span class='label'>Extreme Priority</span>";
+          //   echo "<span class='count'>$extreme_count</span>";
+          //   echo "</div>";
 
-            echo "<div class='box'>";
-            echo "<span class='label'>High Priority</span>";
-            echo "<span class='count'>$high_count</span>";
-            echo "</div>";
+          //   echo "<div class='box'>";
+          //   echo "<span class='label'>High Priority</span>";
+          //   echo "<span class='count'>$high_count</span>";
+          //   echo "</div>";
 
-            echo "<div class='box'>";
-            echo "<span class='label'>Medium Priority</span>";
-            echo "<span class='count'>$medium_count</span>";
-            echo "</div>";
+          //   echo "<div class='box'>";
+          //   echo "<span class='label'>Medium Priority</span>";
+          //   echo "<span class='count'>$medium_count</span>";
+          //   echo "</div>";
 
-            echo "<div class='box'>";
-            echo "<span class='label'>Low Priority</span>";
-            echo "<span class='count'>$low_count</span>";
-            echo "</div>";
+          //   echo "<div class='box'>";
+          //   echo "<span class='label'>Low Priority</span>";
+          //   echo "<span class='count'>$low_count</span>";
+          //   echo "</div>";
 
-            $current_date = date('Y-m-d'); // get current date
-            $sql2 = "SELECT COUNT(*) AS count FROM mytasks WHERE id = $id AND currentStatus!='Discarded' AND currentStatus!='Completed' AND endDate = '$current_date'";
-            $result = $conn->query($sql2);
+          //   $current_date = date('Y-m-d'); // get current date
+          //   $sql2 = "SELECT COUNT(*) AS count FROM mytasks WHERE id = $id AND currentStatus!='Discarded' AND currentStatus!='Completed' AND endDate = '$current_date'";
+          //   $result = $conn->query($sql2);
 
-            $row = $result->fetch_assoc();
-            $count = $row['count'];
+          //   $row = $result->fetch_assoc();
+          //   $count = $row['count'];
 
-            echo "<div class='box'>";
-            echo "<span class='label'>Today</span>";
-            echo "<span class='count'>$count</span>";
-            echo "</div>";
-          echo "</div>";
+          //   echo "<div class='box'>";
+          //   echo "<span class='label'>Today</span>";
+          //   echo "<span class='count'>$count</span>";
+          //   echo "</div>";
+          // echo "</div>";
           
       ?>
+
 
 
   <script src="../javascript/script.js"></script>
@@ -189,8 +193,4 @@ $_SESSION['avatar']
     var username = "<?php echo $_SESSION['username']; ?>";
     var useremail = "<?php echo $_SESSION['email']; ?>";
     var avatar = "../images/avatar/<?php echo $_SESSION['avatar']; ?>";
-  </script>
-
-  <script>
-    
   </script>

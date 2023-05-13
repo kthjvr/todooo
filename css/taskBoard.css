@@ -61,13 +61,13 @@
 /* ---------------- THIS IS FOR TABLE ------------------------------------------------------------------------- */
 .table-container{
   max-height: 700px; /* Set the maximum height for the container */
-  max-width: 500vh;
+  max-width: 100%;
   overflow-x: hidden; /* Add vertical scroll bar */
   overflow-y: auto;
   position: relative; /* Set the position to relative */
   height: 80vh;
-  width: 123vh;
-  left: 25vh;
+  width: 80%;
+  /* left: 25vh; */
   background-color: aliceblue;
   color: #0F044C;
 }
@@ -132,6 +132,9 @@ p.description{
   white-space: nowrap;
   color: var(--main-text-color);
   opacity: 0.75;
+  /* margin-top: -5%; */
+  /* padding: 0% 10% 4% 7%; */
+  font-size: small;
 }
 
 td.category{
@@ -518,13 +521,13 @@ body {
   background-color: var(--sub-color);
   align-items: center;
   font-size: 0.9rem;
-  gap: 10px;
+  /* gap: 10px; */
 }
 
 .logout-container #logout-photo {
   width: 45px;
   height: 45px;
-  border-radius: 50%;
+  /* border-radius: 50%; */
 }
 
 #user-container {
@@ -548,7 +551,7 @@ div.container-fluid {
   margin: 0 auto;
   padding-right: 50px;
   padding-left: 50px;
-  margin-top: 8vh;
+  margin-top: 10vh;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -590,17 +593,39 @@ div.container-side a{
 .container2 {
   border: none;
   padding: 10px;
-  position: fixed;
-  display: block;
-  margin-top: -45vh;
+  position:absolute;
+  display:inline-flex;
+  margin-left: 2%;
+  margin-top: 2%;
+  /* margin-top: -45vh;
   margin-right: 2vh;
-  z-index: 1;
+  z-index: 1; */
   
 }
 
 .container2 button{
-  color: aliceblue;
+  /* color: var(--main-text-color) */
+  background-color: #9996ad;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 400;
+  font-style: normal;
+  text-decoration: none;
+  padding: 5px 15px;
+  border: 0px solid #000;
+  border-radius: 10px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 5px;
 }
+
+.container2 button:hover{
+  background-color: #a6a4b7;
+ }
+ .container2 button:active{
+  transform: scale(0.95);
+ }
 
 label {
   display: block;
@@ -608,10 +633,17 @@ label {
   margin-bottom: 5px;
 }
 
-button {
+/* .container2 button {
   display: block;
   margin-bottom: 5px;
   width: 100%;
+} */
+
+.open-account{
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
 }
 
 
@@ -727,6 +759,14 @@ color: var(--main-text-color);
 border: solid 2px var(--sub-color);
 }
 
+.add-btn-icon{
+  background-color: transparent;
+  padding: 10px 5px;
+  border: none;
+  cursor: pointer;
+  width: auto;
+  }
+  
 iframe {
   width: 57rem;
   height: 45rem;
@@ -760,3 +800,225 @@ font-size: 24px;
 }
       
 
+/* -------------------------------------------- */
+    /* Styling for the task list */
+    .task-container {
+      display: flex;
+  flex-wrap: wrap;
+  font-family: Arial, sans-serif;
+}
+
+.task-list {
+  width: 350px;
+  min-height: 200px;
+  background-color: #f7f7f7;
+  border: 1px solid #e0e0e0;
+  overflow-y: scroll;
+  height: 700px;
+}
+
+.task-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.task-list li {
+  cursor: pointer;
+  padding: 15px;
+  transition: background-color 0.2s ease-in-out;
+  overflow: hidden;
+  max-width: 350px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  /* padding: 8px; */
+  /* border-bottom: 1px solid #ccc; */
+  position: relative;
+  
+}
+
+.task-list li:before {
+  content: "";
+  width: 5px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.task-list li[data-priority="extreme"]::before {
+  background-color: red;
+}
+
+.task-list li[data-priority="high"]::before {
+  background-color: orange;
+}
+
+.task-list li[data-priority="medium"]::before {
+  background-color: yellow;
+}
+
+.task-list li[data-priority="low"]::before {
+  background-color: blue;
+}
+
+.task[data-starred="yes"]::after {
+  content: '\2605';
+  position: absolute;
+  top: 0;
+  right: 20px;
+  font-size: 20px;
+  color: gold;
+}
+
+
+.task-list li.active {
+  background-color: #e0e0e0;
+}
+
+.task-list li:hover {
+  background-color: #e0e0e0;
+}
+
+.task-list hr{
+  border-width: 1px solid #ccc;
+}
+.task-details {
+  flex: 1;
+  min-height: 200px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  padding: 20px;
+  text-align: justify;
+  line-height: 1.5;
+  color: var(--main-text-color);
+}
+
+.task-details p:first-of-type {
+  margin-top: 0;
+}
+
+.task-details p:last-of-type {
+  margin-bottom: 0;
+}
+
+.task-description{
+  color: var(--main-text-color);
+  /* margin-top: 20%; */
+}
+
+#details-placeholder h1{
+  color: var(--main-text-color);
+  margin-bottom: 0;
+}
+
+.searchbox input{
+  float: left;
+  padding: 6px;
+  border: none;
+  margin-top: 8px;
+  margin-right: 16px;
+  font-size: 17px;
+  color: var(--main-text-color);
+  width: 75%;
+  background-color: transparent;
+}
+div#details-placeholder {
+  width: 75%;
+  box-sizing: border-box;
+  padding: 10px;
+}
+.task-info {
+  position: absolute;
+  top: 10%;
+  right: 0;
+  width: 17%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.task-info-item {
+  text-align: left;
+  line-height: 250%;
+}
+
+.task-info-item button{
+  color: var(--main-text-color);
+  display: list-item;
+  position: inherit;
+  background: transparent;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.task-info-item button:hover {
+  transform: scale(1.1);
+}
+
+.task-info-item p, h3 {
+  margin: 0;
+  color: var(--main-text-color);
+  font-size: 15px;
+}
+
+.vertical-line {
+  border: none;
+  border-right: 1px solid gray;
+  height: 100%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0px 57%;
+}
+
+@media (max-width: 768px) {
+  .vertical-line {
+    margin: 0px 20%;
+  }
+}
+
+.divider{
+  width: 100%;
+  margin-left: -10%;
+
+    border: none;
+    height: 1px;
+    background-color: #ddd;
+    margin: 10px 0; 
+}
+
+.divider2{
+  /* width: 100%; */
+  margin-bottom: 2%;
+    border: none;
+    height: 1px;
+    background-color: #ddd;
+    margin: 10px 0;
+  
+}
+
+.details p{
+  color: var(--main-text-color);
+  font-size: 14px;
+  margin-top: -2%;
+  line-height: 5vh;
+}
+
+.section-title{
+  background-color: var(--main-text-color);
+  color: var(--light-color);
+  width: 15%;
+  height: 5%;
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+}
+
+.section-title h1 {
+  margin: 0;
+}
