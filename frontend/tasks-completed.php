@@ -32,23 +32,60 @@ mysqli_close($conn);
 ?>
 
 
-  <!-- Add Task button -->
-  <button type="button" class="add-btn myButton" onclick='openForm()'>+ Add task</button>
-
-  <div class="container-fluid">
+    <div class="section-title">
+      <h1>Completed Tasks</h1>
+    </div>
     <!-- FOR SORT BUTTONS -->
     <div class="container2">
-      <label for="sort">Sort:</label>
-      <button id="sort-date" class="sort-btn" onclick="sortTableAssending()">Sort by Date (Newest)</button>
-      <button id="sort-date" class="sort-btn" onclick="sortTableDescending()">Sort by Date (Oldest)</button>
-      <button id="sort-status" class="sort-btn" onclick="sortStatus()">Sort by Status</button>
-      <button id="sort-status" class="sort-btn" onclick="sortPriority()">Sort by Priority</button>
-      <button id="sort-status" class="sort-btn" onclick="sortCategory()">Sort by Category</button>
+      <button id="sort-button">Sort By Priority</button>
+      <button class="sort-button" onclick="sortListByStar()">Sort Starred</button>
     </div>
 
+
+  <div class="container-fluid">
     <!-- FOR TASK LIST TABLE -->
     <div class="table-container">
-      <table id="myTable">
+      <div class="task-container">
+        <div class="task-list">
+          <div class='searchbox'>
+            <input type="text" placeholder='Search...' id='search-input'/>
+            <button class="add-btn-icon myButton"><img width="24" height="24" src="https://img.icons8.com/material/24/create-new--v1.png" alt="create-new--v1"/></button>
+          </div>
+          <hr>
+          <ul id="task-list">
+            
+            <?php
+                $current_date = date('Y-m-d'); // get current date
+                $conn = mysqli_connect($servername, $username, $password, $dbname);  // Connect to the database again
+                if (!$conn) { die("Connection failed: " . mysqli_connect_error()); } // Check connection again
+                  
+                $id = $_SESSION['id'];
+                  
+                $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus='Completed'"; //retrieve info from db
+                $info_result = mysqli_query($conn, $info_sql);
+                
+                // Loop through task names and create list items
+                while($row = mysqli_fetch_assoc($info_result)) {
+                  echo "<li class='task' data-priority='".$row['priority_stat']."' data-starred='".$row['starred']."' style='color: black' id='".$row['taskID']."'>".$row['taskName']."";
+                  echo "<p class='description'>".$row["taskDescription"]."</p>
+                  </li>";
+                  echo "<p class='task-id' hidden>".$row['taskID']."</p>";
+                  // echo "<hr>";
+                }
+            ?>
+          </ul>
+        </div>
+
+        <div class="task-details">
+
+          <div id="details-placeholder">
+            <p style='color: black'>Select a task to view its details.</p>
+
+
+        </div>
+      </div>
+
+      <!-- <table id="myTable">
         <thead>
           <tr>
           <th>Category</th>
@@ -68,7 +105,7 @@ mysqli_close($conn);
               
             $id = $_SESSION['id'];
               
-            $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus='Completed'"; //retrieve info from db
+            $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND mytasks.endDate='".$current_date."'"; //retrieve info from db
             $info_result = mysqli_query($conn, $info_sql);
             
             if (mysqli_num_rows($info_result) > 0) { // Display the information in the table
@@ -107,7 +144,7 @@ mysqli_close($conn);
               mysqli_close($conn);
           ?>
         </tbody>
-      </table>
+      </table> -->
     </div>
   </div>
 </div>
@@ -117,6 +154,13 @@ mysqli_close($conn);
 <!-- THIS IS FOR UPDATE MODAL -->
 <div id="popup-taskcontent" class="popup">
   <div class="popup-content" id="task-details">
+    </div>
+  </div>
+</div>
+
+<!-- THIS IS FOR ACCOUNT MODAL -->
+<div id="account" class="popup">
+  <div class="popup-content" id="account-details">
     </div>
   </div>
 </div>
@@ -213,11 +257,143 @@ mysqli_close($conn);
 
 <!-- THIS SECTION IS FOR JAVASCRIPT -->
 
+<script>
+  function searchTasks() {
+    var input, filter, ul, li, a, i, txtValue;
+    input = document.getElementById('search-input');
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("task-list");
+    li = ul.getElementsByTagName('li');
+
+    // Loop through all list items, and hide those that don't match the search query
+    for (i = 0; i < li.length; i++) {
+      a = li[i].getElementsByTagName("p")[0];
+      txtValue = a.textContent || a.innerText;
+      txtValue = txtValue.toUpperCase() + li[i].textContent.toUpperCase();
+      if (txtValue.indexOf(filter) > -1) {
+        li[i].style.display = "";
+      } else {
+        li[i].style.display = "none";
+      }
+    }
+  }
+
+  // Call the searchTasks function when the user presses the enter key or deletes all the input
+  document.getElementById("search-input").addEventListener("keyup", function(event) {
+    if (event.key === "Enter" || this.value.length === 0) {
+      searchTasks();
+    }
+  });
+
+</script>
+
+
+<script>
+ function sortListByStar() {
+    let taskList = document.querySelector('#task-list');
+    let tasks = taskList.children;
+    let starredTasks = [];
+    let unstarredTasks = [];
+
+    for (let i = 0; i < tasks.length; i++) {
+        let task = tasks[i];
+        if (task.getAttribute('data-starred') === 'yes') {
+            starredTasks.push(task);
+        } else {
+            unstarredTasks.push(task);
+        }
+    }
+
+    starredTasks.sort(function(a, b) {
+        return a.getAttribute('data-starred') === 'yes' && b.getAttribute('data-starred') === 'no' ? -1 : 1;
+    });
+
+    unstarredTasks.sort(function(a, b) {
+        return a.getAttribute('data-starred') === 'yes' && b.getAttribute('data-starred') === 'no' ? -1 : 1;
+    });
+
+    let sortedTasks = starredTasks.concat(unstarredTasks);
+
+    for (let i = 0; i < sortedTasks.length; i++) {
+        taskList.appendChild(sortedTasks[i]);
+    }
+  }
+
+</script>
+
+<script>
+  function sortList() {
+			let taskList = document.querySelector('#task-list');
+			let tasks = taskList.children;
+
+			let tasksArr = [];
+			for (let i = 0; i < tasks.length; i++) {
+				let task = tasks[i];
+				let priority = task.getAttribute('data-priority');
+				tasksArr.push({
+					element: task,
+					priority: priority
+				});
+			}
+
+			tasksArr.sort(function(a, b) {
+				let priorityA = a.priority;
+				let priorityB = b.priority;
+
+				if (priorityA === 'extreme') {
+					return -1;
+				} else if (priorityA === 'high' && priorityB !== 'extreme') {
+          return -1;
+				} else if (priorityA === 'medium' && priorityB !== 'extreme' && priorityB !== 'high') {
+					return -1;
+				} else if (priorityA === 'low' && priorityB === 'none') {
+					return -1;
+				} else {
+					return 1;
+				}
+			});
+
+			for (let i = 0; i < tasksArr.length; i++) {
+				let task = tasksArr[i].element;
+				taskList.appendChild(task);
+			}
+		}
+
+		let sortButton = document.querySelector('#sort-button');
+		sortButton.addEventListener('click', sortList);
+
+</script>
+
+<script>
+  $(document).ready(function() {
+    // Load task details for the first task on page load
+    var firstTaskID = $(".task-list li:first").attr("id");
+    loadTaskDetails(firstTaskID);
+
+    // Load task details when a task is clicked
+    $(".task-list li").click(function() {
+      var taskID = $(this).attr("id");
+      loadTaskDetails(taskID);
+    });
+  });
+
+  function loadTaskDetails(taskID) {
+    $.ajax({
+      url: "../backend/completed_get_task_details.php",
+      type: "POST",
+      data: { taskID: taskID },
+      success: function(data) {
+        $("#details-placeholder").html(data);
+      }
+    });
+  }
+</script>
+
 <!-- THIS IS FOR MOVING TASK TO TRASH -->
 <script>
   $('.moveToTrash').on('click', function() {
       // Get the task ID from the row
-      var taskID = $(this).closest('tr').find('.task-id').text();
+      var taskID = $(this).closest('p').find('.task-id').text();
 
       Swal.fire({
       title: "Move this task to trash?",
@@ -257,7 +433,7 @@ mysqli_close($conn);
 <script>
   $('.setInprogress').on('click', function() {
       // Get the task ID from the row
-      var taskID = $(this).closest('tr').find('.task-id').text();
+      var taskID = $(this).closest('p').find('.task-id').text();
 
       Swal.fire({
       title: "Set this task to inprogress?",
@@ -377,7 +553,7 @@ mysqli_close($conn);
 </script>
 
 <!-- THIS IS FOR DROPDOWN MENU -->
-<script>
+<!-- <script>
   // Get the dropdown button element
   var dropdownBtn = document.querySelector(".dropbtn");
 
@@ -394,7 +570,7 @@ mysqli_close($conn);
     }
   });
 
-</script>
+</script> -->
 
 <!-- THIS IS FOR DISPLAYING TASK DETAILS -->
 <script>
@@ -404,7 +580,7 @@ mysqli_close($conn);
 
       // Send an AJAX request to retrieve the details of the task
       $.ajax({
-        url: '../view/completed-details.php',
+        url: '../view/query.php',
         method: 'POST',
         data: { taskID: taskID },
         success: function(response) {
@@ -434,7 +610,7 @@ mysqli_close($conn);
       event.preventDefault();
     } else {
       Swal.fire({
-            title: "task Added",
+            title: "Task Added",
             text: "The task has been added successfully.",
             icon: "success",
             showConfirmButton: false
@@ -589,12 +765,12 @@ mysqli_close($conn);
   }
 </script>
 
-<!-- THIS IS FOR SORTING STATUS IN THE TABLE -->
+<!-- THIS IS FOR SORTING PRIORITY IN THE TABLE -->
 <script>
   var sortPriorityAscending = true;
     function sortPriority() {
       var table, rows, i, x, y, shouldSwitch;
-      table = document.getElementById("myTable");
+      table = document.getElementById("list");
       shouldSwitch = true;
       
       while (shouldSwitch) {
@@ -602,8 +778,8 @@ mysqli_close($conn);
         rows = table.rows;
         
         for (i = 1; i < (rows.length - 1); i++) {
-          x = rows[i].getElementsByTagName("TD")[4];
-          y = rows[i + 1].getElementsByTagName("TD")[4];
+          x = rows[i].getElementsByTagName("li");
+          y = rows[i + 1].getElementsByTagName("li");
           
           if (sortPriorityAscending) {
             if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {

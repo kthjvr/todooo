@@ -36,7 +36,7 @@ if (isset($_SESSION['loggedin'])) {
 
 } else {
     // The user is not logged in, so redirect them to the login page
-    header("Location: ../frontend/sign-in.php");
+    header("Location: ../frontend/sign-in.html");
     exit;
 }
 

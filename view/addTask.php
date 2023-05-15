@@ -89,7 +89,7 @@ mysqli_close($conn);
                 <h4 for="category">Category</h4>
                 <div class="custom-select" style="width:300px;" id="category" name="category">
                     <select>
-                    <option value="0">Select category:</option>
+                    <option value="0" disable>Select category:</option>
                         <?php
                         $conn = mysqli_connect($servername, $username, $password, $dbname);  // Connect to the database again
                         if (!$conn) { die("Connection failed: " . mysqli_connect_error()); } // Check connection again

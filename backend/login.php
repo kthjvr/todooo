@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   // If the username or password is incorrect
   echo "<script>alert('Invalid username or password')</script>";
-  echo "<script>window.location.href='sign-in.php'</script>";
+  echo "<script>window.location.href='sign-in.html'</script>";
 
 }
 ?>

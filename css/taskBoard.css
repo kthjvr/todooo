@@ -65,8 +65,8 @@
   overflow-x: hidden; /* Add vertical scroll bar */
   overflow-y: auto;
   position: relative; /* Set the position to relative */
-  height: 80vh;
-  width: 80%;
+  height: 90vh;
+  width: 100%;
   /* left: 25vh; */
   background-color: aliceblue;
   color: #0F044C;
@@ -1022,3 +1022,34 @@ div#details-placeholder {
 .section-title h1 {
   margin: 0;
 }
+
+.error {
+  border-color: red;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.8em;
+  margin-top: 0.2em;
+  display: none;
+}
+
+#star-button {
+  display: inline-block;
+  cursor: pointer;
+}
+
+#star-text {
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+#star-icon {
+  font-size: 24px;
+  color: black;
+}
+
+#star-button.yes #star-icon {
+  color: gold;
+}
+
