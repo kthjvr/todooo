@@ -37,7 +37,7 @@ if (isset($_SESSION['loggedin'])) {
 
     if ($conn->query($sql) === TRUE) {
       sleep(1);
-      header("Location: ../frontend/tasks.php");
+      header("Location: ../frontend/tasks_v2.php");
     } else {
       echo "Error updating record: " . $conn->error;
     }
@@ -48,7 +48,7 @@ if (isset($_SESSION['loggedin'])) {
 
 } else {
     // The user is not logged in, so redirect them to the login page
-    header("Location: ../frontend/sign-in.php");
+    header("Location: ../frontend/sign-in.html");
     exit;
 }
 

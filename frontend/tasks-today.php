@@ -32,23 +32,62 @@ mysqli_close($conn);
 ?>
 
 
-  <!-- Add Task button -->
-  <button type="button" class="add-btn myButton" onclick='openForm()'>+ Add task</button>
-
-  <div class="container-fluid">
+    <div class="section-title">
+      <h1>Today's Tasks</h1>
+    </div>
     <!-- FOR SORT BUTTONS -->
     <div class="container2">
-      <label for="sort">Sort:</label>
-      <button id="sort-date" class="sort-btn" onclick="sortTableAssending()">Sort by Date (Newest)</button>
-      <button id="sort-date" class="sort-btn" onclick="sortTableDescending()">Sort by Date (Oldest)</button>
-      <button id="sort-status" class="sort-btn" onclick="sortStatus()">Sort by Status</button>
-      <button id="sort-status" class="sort-btn" onclick="sortPriority()">Sort by Priority</button>
-      <button id="sort-status" class="sort-btn" onclick="sortCategory()">Sort by Category</button>
+      <button id="sort-button">Sort By Priority</button>
+      <button class="sort-button" onclick="sortListByStar()">Sort Starred</button>
     </div>
 
+
+  <div class="container-fluid">
     <!-- FOR TASK LIST TABLE -->
     <div class="table-container">
-      <table id="myTable">
+      <div class="task-container">
+        <div class="task-list">
+          <div class='searchbox'>
+            <input type="text" placeholder='Search...' id='search-input'/>
+            <button class="add-btn-icon myButton"><img width="24" height="24" src="https://img.icons8.com/material/24/create-new--v1.png" alt="create-new--v1"/></button>
+          </div>
+          <hr>
+          <ul id="task-list">
+            
+            <?php
+                $current_date = date('Y-m-d'); // get current date
+                $conn = mysqli_connect($servername, $username, $password, $dbname);  // Connect to the database again
+                if (!$conn) { die("Connection failed: " . mysqli_connect_error()); } // Check connection again
+                  
+                $id = $_SESSION['id'];
+                  
+                $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND mytasks.endDate='".$current_date."'"; //retrieve info from db
+                $info_result = mysqli_query($conn, $info_sql);
+                
+                // Display the information in the HTML table
+              if (mysqli_num_rows($info_result) > 0) {
+                while($row = mysqli_fetch_assoc($info_result)) {
+                  echo "<li class='task' data-priority='".$row['priority_stat']."' data-starred='".$row['starred']."' style='color: black' id='".$row['taskID']."' uid='".$row['id']."'>".$row['taskName']."";
+                  echo "<p class='description'>".$row["taskDescription"]."</p>
+                  </li>";
+                  echo "<p class='task-id' hidden>".$row['taskID']."</p>";
+                  // echo "<hr>";
+                }
+              } 
+            ?>
+          </ul>
+        </div>
+
+        <div class="task-details">
+
+          <div id="details-placeholder">
+            <p style='color: black'>Select a task to view its details.</p>
+
+
+        </div>
+      </div>
+
+      <!-- <table id="myTable">
         <thead>
           <tr>
           <th>Category</th>
@@ -68,7 +107,7 @@ mysqli_close($conn);
               
             $id = $_SESSION['id'];
               
-            $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND mytasks.endDate='".$current_date."'"; //retrieve info from db
+            $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed'"; //retrieve info from db
             $info_result = mysqli_query($conn, $info_sql);
             
             if (mysqli_num_rows($info_result) > 0) { // Display the information in the table
@@ -107,7 +146,7 @@ mysqli_close($conn);
               mysqli_close($conn);
           ?>
         </tbody>
-      </table>
+      </table> -->
     </div>
   </div>
 </div>
@@ -121,6 +160,13 @@ mysqli_close($conn);
   </div>
 </div>
 
+<!-- THIS IS FOR ACCOUNT MODAL -->
+<div id="account" class="popup">
+  <div class="popup-content" id="account-details">
+    </div>
+  </div>
+</div>
+
 <!-- THIS IS FOR ADD TASK MODAL -->
 <div id="popup" class="popup">
   <div class="popup-content">
@@ -130,14 +176,14 @@ mysqli_close($conn);
         <div class="form_wrap form_grp">
           <div class="form_item">
             <label for="task-name">Task Name</label>
-            <input type="text" placeholder="Title" id="task-name" name="task-name"/>
+            <input type="text" placeholder="Title" id="task-name" name="task-name" required/>
           </div>
         </div>
 
         <div class="form_wrap form_grp">
           <div class="form_item">
             <label for="task-description">Task Description</label>
-            <textarea id="task-description" name="task-description" placeholder="Add description" maxlength="300"></textarea>
+            <textarea id="task-description" name="task-description" placeholder="Add description" maxlength="300" required></textarea>
             <p><span class="GFG">300</span> Characters Remaining</p>
           </div>
         </div>
@@ -145,8 +191,8 @@ mysqli_close($conn);
         <div class="form_wrap form_grp">
           <div class="form_item">
             <label for="starred">Marked as important?</label>
-              <select id="starred" name="starred">
-                  <option selected disabled>Select importance...</option>
+              <select id="starred" name="starred" required>
+                  <option selected disabled value="">Select importance...</option>
                   <option id="yesstarred" for="yesstarred" value="yes">Yes</option>
                   <option id="notStarred" for="notStarred" value="no">No</option>
               </select>
@@ -154,8 +200,8 @@ mysqli_close($conn);
 
           <div class="form_item">
             <label for="priority_stat">Priority</label>
-                <select id="priority_stat" name="priority_stat">
-                <option selected disabled>Select priority status...</option>
+                <select id="priority_stat" name="priority_stat" required>
+                <option selected disabled value="">Select priority status...</option>
                     <option id="extreme-priority" name="priority_stat" value="extreme">Extreme</option>
                     <option id="high-priority" name="priority_stat" value="high">High</option>
                     <option id="medium-priority" name="priority_stat" value="medium">Medium</option>
@@ -166,9 +212,9 @@ mysqli_close($conn);
 
         <div class="form_wrap form_grp">
           <div class="form_item">
-            <label>Category</label>
-            <select id="category" name="category">
-            <option selected disabled>Select category...</option>
+            <label for='category'>Category</label>
+            <select id="category" name="category" required>
+            <option selected disabled value=''>Select category...</option>
             <?php
               $conn = mysqli_connect($servername, $username, $password, $dbname);  // Connect to the database again
               if (!$conn) { die("Connection failed: " . mysqli_connect_error()); } // Check connection again
@@ -182,7 +228,7 @@ mysqli_close($conn);
               if (mysqli_num_rows($info_result) > 0) { // Display the information in the HTML table
                   while ($row = mysqli_fetch_assoc($info_result)) {
                       // echo "<option>".$id."</option>";
-                      echo "<option value='".$row["categoryID"]."' name='category' id='".$row["category"]."'>".$row["category"]."</option>";
+                      echo "<option value='".$row["categoryID"]."' name='category'>".$row["category"]."</option>";
                   }
               } else {
                   echo "<option>No results</option>";
@@ -197,7 +243,7 @@ mysqli_close($conn);
             <label for="endDate">End Date</label>
             <?php
               $current_date = date('Y-m-d'); // get current date
-              echo '<input type="date" id="endDate" name="endDate" min="'.$current_date.'"/>';
+              echo '<input type="date" id="endDate" name="endDate" min="'.$current_date.'" required/>';
             ?>
           </div>
         </div>
@@ -213,11 +259,153 @@ mysqli_close($conn);
 
 <!-- THIS SECTION IS FOR JAVASCRIPT -->
 
+<script>
+  function searchTasks() {
+    var input, filter, ul, li, a, i, txtValue;
+    input = document.getElementById('search-input');
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("task-list");
+    li = ul.getElementsByTagName('li');
+
+    // Loop through all list items, and hide those that don't match the search query
+    for (i = 0; i < li.length; i++) {
+      a = li[i].getElementsByTagName("p")[0];
+      txtValue = a.textContent || a.innerText;
+      txtValue = txtValue.toUpperCase() + li[i].textContent.toUpperCase();
+      if (txtValue.indexOf(filter) > -1) {
+        li[i].style.display = "";
+      } else {
+        li[i].style.display = "none";
+      }
+    }
+  }
+
+  // Call the searchTasks function when the user presses the enter key or deletes all the input
+  document.getElementById("search-input").addEventListener("keyup", function(event) {
+    if (event.key === "Enter" || this.value.length === 0) {
+      searchTasks();
+    }
+  });
+
+</script>
+
+
+<script>
+ function sortListByStar() {
+    let taskList = document.querySelector('#task-list');
+    let tasks = taskList.children;
+    let starredTasks = [];
+    let unstarredTasks = [];
+
+    for (let i = 0; i < tasks.length; i++) {
+        let task = tasks[i];
+        if (task.getAttribute('data-starred') === 'yes') {
+            starredTasks.push(task);
+        } else {
+            unstarredTasks.push(task);
+        }
+    }
+
+    starredTasks.sort(function(a, b) {
+        return a.getAttribute('data-starred') === 'yes' && b.getAttribute('data-starred') === 'no' ? -1 : 1;
+    });
+
+    unstarredTasks.sort(function(a, b) {
+        return a.getAttribute('data-starred') === 'yes' && b.getAttribute('data-starred') === 'no' ? -1 : 1;
+    });
+
+    let sortedTasks = starredTasks.concat(unstarredTasks);
+
+    for (let i = 0; i < sortedTasks.length; i++) {
+        taskList.appendChild(sortedTasks[i]);
+    }
+}
+
+</script>
+
+<script>
+  function sortList() {
+			let taskList = document.querySelector('#task-list');
+			let tasks = taskList.children;
+
+			let tasksArr = [];
+			for (let i = 0; i < tasks.length; i++) {
+				let task = tasks[i];
+				let priority = task.getAttribute('data-priority');
+				tasksArr.push({
+					element: task,
+					priority: priority
+				});
+			}
+
+			tasksArr.sort(function(a, b) {
+				let priorityA = a.priority;
+				let priorityB = b.priority;
+
+				if (priorityA === 'extreme') {
+					return -1;
+				} else if (priorityA === 'high' && priorityB !== 'extreme') {
+          return -1;
+				} else if (priorityA === 'medium' && priorityB !== 'extreme' && priorityB !== 'high') {
+					return -1;
+				} else if (priorityA === 'low' && priorityB === 'none') {
+					return -1;
+				} else {
+					return 1;
+				}
+			});
+
+			for (let i = 0; i < tasksArr.length; i++) {
+				let task = tasksArr[i].element;
+				taskList.appendChild(task);
+			}
+		}
+
+		let sortButton = document.querySelector('#sort-button');
+		sortButton.addEventListener('click', sortList);
+
+</script>
+
+<script>
+  $(document).ready(function() {
+    // Load task details for the first task on page load
+    var firstTaskID = $(".task-list li:first").attr("id");
+    var id = $(".task-list li:first").attr("uid");
+    console.log(id)
+    loadTaskDetails(firstTaskID, id);
+
+    // Load task details when a task is clicked
+    $(".task-list li").click(function() {
+      var taskID = $(this).attr("id");
+      var id = $(this).attr("uid");
+      console.log(id)
+      loadTaskDetails(taskID, id);
+    });
+  });
+
+  function loadTaskDetails(taskID, id) {
+  var taskList = $("#task-list");
+  if (taskList.children().length == 0) { // Check if the task list is empty
+    $("#details-placeholder").html("<p style='color: black'>No tasks found. Please add one.</p>");
+  } else {
+    $.ajax({
+      url: "../backend/get_task_details.php",
+      type: "POST",
+      data: { taskID: taskID, id: id },
+      success: function(data) {
+        $("#details-placeholder").html(data);
+      }
+    });
+  }
+}
+
+</script>
+
 <!-- THIS IS FOR MOVING TASK TO TRASH -->
 <script>
   $('.moveToTrash').on('click', function() {
       // Get the task ID from the row
-      var taskID = $(this).closest('tr').find('.task-id').text();
+      var taskID = $(this).closest('p').find('.task-id').text();
 
       Swal.fire({
       title: "Move this task to trash?",
@@ -257,7 +445,7 @@ mysqli_close($conn);
 <script>
   $('.setInprogress').on('click', function() {
       // Get the task ID from the row
-      var taskID = $(this).closest('tr').find('.task-id').text();
+      var taskID = $(this).closest('p').find('.task-id').text();
 
       Swal.fire({
       title: "Set this task to inprogress?",
@@ -377,7 +565,7 @@ mysqli_close($conn);
 </script>
 
 <!-- THIS IS FOR DROPDOWN MENU -->
-<script>
+<!-- <script>
   // Get the dropdown button element
   var dropdownBtn = document.querySelector(".dropbtn");
 
@@ -394,7 +582,7 @@ mysqli_close($conn);
     }
   });
 
-</script>
+</script> -->
 
 <!-- THIS IS FOR DISPLAYING TASK DETAILS -->
 <script>
@@ -434,7 +622,7 @@ mysqli_close($conn);
       event.preventDefault();
     } else {
       Swal.fire({
-            title: "task Added",
+            title: "Task Added",
             text: "The task has been added successfully.",
             icon: "success",
             showConfirmButton: false
@@ -444,37 +632,56 @@ mysqli_close($conn);
   });
 
   function validateForm() {
-    let formIsValid = true;
+  let formIsValid = true;
 
-    // Check if task name is empty
-    const taskName = document.querySelector('#task-name').value;
-    if (taskName.trim() === '') {
-      alert('Task name cannot be empty');
-      formIsValid = false;
-    }
+  // Check if task name is empty
+  const taskName = document.querySelector('#task-name').value;
+  // const taskNameErrorMessage = taskNameInput.parentElement.querySelector('.error-message');
 
-    // Check if task description is empty
-    const taskDescription = document.querySelector('#task-description').value;
-    if (taskDescription.trim() === '') {
-      alert('Task description cannot be empty');
-      formIsValid = false;
-    }
-
-    // Check if end date is empty
-    const endDate = document.querySelector('#endDate').value;
-    if (endDate.trim() === '') {
-      alert('End date cannot be empty');
-      formIsValid = false;
-    }
-
-    const starred = document.querySelector('#starred').value;
-    if (starred.trim() === '') {
-      alert('Marked as important cannot be empty');
-      formIsValid = false;
-    }
-
-    return formIsValid;
+  if (taskName.trim() === '') {
+    alert('Task name cannot be empty');
+    // taskName.classList.add('error');
+    // taskNameErrorMessage.textContent = 'Task name cannot be empty';
+    // taskNameErrorMessage.style.display = 'block';
+    formIsValid = false;
   }
+
+  // Check if task description is empty
+  const taskDescription = document.querySelector('#task-description').value;
+  if (taskDescription.trim() === '') {
+    alert('Task description cannot be empty');
+    formIsValid = false;
+  }
+
+  // Check if end date is empty
+  const endDate = document.querySelector('#endDate').value;
+  if (endDate.trim() === '') {
+    alert('End date cannot be empty');
+    formIsValid = false;
+  }
+
+  const starred = document.querySelector('#starred').value;
+  if (starred.trim() === '') {
+    alert('Marked as important cannot be empty');
+    formIsValid = false;
+  }
+
+  const priorityStat = document.querySelector('#priority_stat').value;
+  if (priorityStat.trim() === '') {
+    alert('Priority status cannot be empty');
+    formIsValid = false;
+  }
+
+  // Check if category is empty
+  const category = document.querySelector('#category option:checked').value;
+  if (category.trim() === '') {
+    alert('Category cannot be empty');
+    formIsValid = false;
+  }
+
+  return formIsValid;
+}
+
 </script>
 
 <!-- THIS IS FOR SORTING CATEGORY IN THE TABLE -->
@@ -589,12 +796,12 @@ mysqli_close($conn);
   }
 </script>
 
-<!-- THIS IS FOR SORTING STATUS IN THE TABLE -->
+<!-- THIS IS FOR SORTING PRIORITY IN THE TABLE -->
 <script>
   var sortPriorityAscending = true;
     function sortPriority() {
       var table, rows, i, x, y, shouldSwitch;
-      table = document.getElementById("myTable");
+      table = document.getElementById("list");
       shouldSwitch = true;
       
       while (shouldSwitch) {
@@ -602,8 +809,8 @@ mysqli_close($conn);
         rows = table.rows;
         
         for (i = 1; i < (rows.length - 1); i++) {
-          x = rows[i].getElementsByTagName("TD")[4];
-          y = rows[i + 1].getElementsByTagName("TD")[4];
+          x = rows[i].getElementsByTagName("li");
+          y = rows[i + 1].getElementsByTagName("li");
           
           if (sortPriorityAscending) {
             if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {

@@ -21,7 +21,7 @@ if (isset($_SESSION['loggedin'])) {
     }
 
     // Insert the data into the tasks table with the user ID
-    $sql = "UPDATE mytasks SET trash='1', currentStatus='Discarded' WHERE taskID='$taskID'";
+    $sql = "DELETE FROM mytasks WHERE taskID='$taskID'";
 
     if ($conn->query($sql) === TRUE) {
       header("Location: ../frontend/tasks_v2.php");

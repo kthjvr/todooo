@@ -30,7 +30,7 @@ if (isset($_SESSION['loggedin'])) {
     VALUES ('$id', '$taskName', '$taskDescription', '$endDate', '$priority_stat', '$starred', '$category')";
     if (mysqli_query($conn, $sql)) {
         sleep(1);
-        header("Location: ../frontend/tasks.php");
+        header("Location: ../frontend/tasks_v2.php");
     } else {
         echo "Error inserting data: " . mysqli_error($conn);
     }
@@ -41,7 +41,7 @@ if (isset($_SESSION['loggedin'])) {
 
 } else {
     // The user is not logged in, so redirect them to the login page
-    header("Location: ../frontend/sign-in.php");
+    header("Location: ../frontend/sign-in.html");
     exit;
 }
 

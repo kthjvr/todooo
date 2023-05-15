@@ -11,6 +11,7 @@ if (isset($_SESSION['loggedin'])) {
 
     // Get the data from the form submission (assuming the data is submitted through POST method)
     $taskID = $_POST['taskID'];
+    $status = $_POST["status"];
 
     // Connect to the database
     $conn = mysqli_connect("localhost", "root", "", "getItDone");
@@ -21,10 +22,11 @@ if (isset($_SESSION['loggedin'])) {
     }
 
     // Insert the data into the tasks table with the user ID
-    $sql = "UPDATE mytasks SET trash='1', currentStatus='Discarded' WHERE taskID='$taskID'";
+    $sql = "UPDATE mytasks SET starred='" . $status . "' WHERE taskID='$taskID'";
 
     if ($conn->query($sql) === TRUE) {
-      header("Location: ../frontend/tasks_v2.php");
+      // sleep(1);
+      header("Location: ../frontend/tasks.php");
     } else {
       echo "Error updating record: " . $conn->error;
     }
@@ -35,7 +37,7 @@ if (isset($_SESSION['loggedin'])) {
 
 } else {
     // The user is not logged in, so redirect them to the login page
-    header("Location: ../frontend/sign-in.html");
+    header("Location: ../frontend/sign-in.php");
     exit;
 }
 
