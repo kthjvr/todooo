@@ -2,11 +2,17 @@
   // Get task details from database based on taskID
   $conn = mysqli_connect("localhost", "root", "", "getitdone");
   $taskID = $_POST["taskID"];
-  $sql = "SELECT * FROM mytasks WHERE taskID='".$taskID."'";
+  $id = $_POST["id"];
+
+
+
+  $sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND taskID=$taskID";
+
   $result = mysqli_query($conn, $sql);
   $row = mysqli_fetch_assoc($result);
 
-  // Echo task details HTML
+  // echo "<p>".$row['id']."</p>";
+
   echo "<h1 class='task-title'>".$row['taskName']."</h1>
   <p class='task-id' hidden>".$row['taskID']."</p>
   <div class='details'>
@@ -19,6 +25,9 @@
     &nbsp;&nbsp;&nbsp;
     <img width='24' height='24' src='https://img.icons8.com/material/24/timeline-week.png' alt='timeline-week' style='vertical-align: middle;'/>
     ".$row['endDate']."
+    &nbsp;&nbsp;&nbsp;
+    <img src='../images/category.png' alt='cat' style='vertical-align: middle;'/>
+    ".$row['category']."
     </p>
   </div>
   ";
@@ -26,8 +35,6 @@
   echo "<p class='task-description'>".$row['taskDescription']."</p>";
   echo "          </div>
 
-  
-  
   <div class='task-info'>
     <div class='task-info-item'>
       <h3><img src='../images/settings.png' style='vertical-align: middle;'>&nbsp;Task Configuration</h3>
@@ -41,7 +48,7 @@
 <script>
   $('.edit').on('click', function() {
   // Get the task ID from the row
-  var taskID = $(this).closest('div#details-placeholder').find('.task-id').text();
+  var taskID = $(this).closest('div#task-details-container').find('.task-id').text();
   console.log(taskID);
 
   // Show the confirmation dialog box
@@ -77,7 +84,7 @@
 <script>
   $('.moveToTrash').on('click', function() {
       // Get the task ID from the row
-      var taskID = $(this).closest('div#details-placeholder').find('.task-id').text();
+      var taskID = $(this).closest('div#task-details-container').find('.task-id').text();
 
       Swal.fire({
       title: "Move this task to trash?",
@@ -117,7 +124,7 @@
 <script>
   $('.setInprogress').on('click', function() {
       // Get the task ID from the row
-      var taskID = $(this).closest('div#details-placeholder').find('.task-id').text();
+      var taskID = $(this).closest('div#task-details-container').find('.task-id').text();
       console.log(taskID)
 
       Swal.fire({
@@ -155,31 +162,45 @@
 </script>
 
 <!-- THIS IS FOR SETTING TASK TO STARRED -->
-<script>
-  $('.setStar').on('click', function() {
-      // Get the task ID from the row
-      var taskID = $(this).closest('div#details-placeholder').find('.task-id').text();
 
-      Swal.fire({
-      title: "Marked as important?",
-      icon: "warning",
+<script>
+  $(document).ready(function() {
+    $("#star-button").click(function() {
+      var button = $(this);
+      var taskID = $(this).closest('div#task-details-container').find('.task-id').text();
+      var status = button.hasClass("yes") ? "no" : "yes";
+      var title = status == "yes" ? "Star task" : "Unstar task";
+      var text = status == "yes" ? "Do you want to star this task?" : "Do you want to unstar this task?";
+
+
+      swal.fire({
+        title: title,
+        text: text,
+        type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes.",
-      cancelButtonText: "No.",
-      confirmButtonColor: "#F999B7",
-      reverseButtons: true
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+        closeOnConfirm: false
     }).then((result) => {
-      // If the user confirms the action, delete the data
       if (result.isConfirmed) {
-        // Send an AJAX request to delete the task
+          if (status == "yes") {
+            button.addClass("no");
+          } else {
+            button.removeClass("yes");
+          }
+
         $.ajax({
-          url: '../backend/setStarred.php',
-          method: 'POST',
-          data: { taskID: taskID },
+        url: "../backend/update_starred.php",
+        method: "POST",
+        data: {
+          taskID: taskID,
+          status: status
+        },
           success: function(response) {
-            Swal.fire({
-            title: "Task updated!",
-            text: "The task has been marked as important.",
+          swal.fire({
+              title: "Task status updated!",
+              text: "The task status has been updated successfully.",
             icon: "success",
             confirmButtonText: "OK",
             confirmButtonColor: "#F999B7"
@@ -188,18 +209,23 @@
             location.reload(); // Reload the page
             // Or update the UI here
           });
+        },
+          error: function() {
+            swal("Error", "There was an error updating the task status.", "error");
       }
         });
       }
     });
   });
+  });
+
 </script>
 
 <!-- THIS IS FOR SETTING TASK TO COMPLETED -->
 <script>
   $('.setComplete').on('click', function() {
       // Get the task ID from the row
-      var taskID = $(this).closest('div#details-placeholder').find('.task-id').text();
+      var taskID = $(this).closest('div#task-details-containe').find('.task-id').text();
 
       Swal.fire({
       title: "Task Completed?",

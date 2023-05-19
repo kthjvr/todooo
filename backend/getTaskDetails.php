@@ -1,8 +1,11 @@
 <?php
+
   // Get task details from database based on taskID
   $conn = mysqli_connect("localhost", "root", "", "getitdone");
   $taskID = $_POST["taskID"];
   $id = $_POST["id"];
+
+
 
   $sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND taskID=$taskID";
 
@@ -51,6 +54,7 @@
      <span id='star-text' style='color: #141E61;'>Star</span>
      </button>
       <button class='edit'><img src='../images/edit-task.png' style='vertical-align: middle;'>&nbsp;Edit Task</button>
+      
 
       
 
@@ -58,7 +62,6 @@
   </div>";
 
 ?>
-
 
 
 <script>
@@ -75,7 +78,7 @@ if (starButton.classList.contains('yes')) {
 <script>
   $('.edit').on('click', function() {
   // Get the task ID from the row
-  var taskID = $(this).closest('div#details-placeholder').find('.task-id').text();
+  var taskID = $(this).closest('div#task-details-container').find('.task-id').text();
   console.log(taskID);
 
   // Show the confirmation dialog box
@@ -111,7 +114,7 @@ if (starButton.classList.contains('yes')) {
 <script>
   $('.moveToTrash').on('click', function() {
       // Get the task ID from the row
-      var taskID = $(this).closest('div#details-placeholder').find('.task-id').text();
+      var taskID = $(this).closest('div#task-details-container').find('.task-id').text();
 
       Swal.fire({
       title: "Move this task to trash?",
@@ -151,7 +154,7 @@ if (starButton.classList.contains('yes')) {
 <script>
   $('.setInprogress').on('click', function() {
       // Get the task ID from the row
-      var taskID = $(this).closest('div#details-placeholder').find('.task-id').text();
+      var taskID = $(this).closest('div#task-details-container').find('.task-id').text();
       console.log(taskID)
 
       Swal.fire({
@@ -189,11 +192,12 @@ if (starButton.classList.contains('yes')) {
 </script>
 
 <!-- THIS IS FOR SETTING TASK TO STARRED -->
+
 <script>
   $(document).ready(function() {
     $("#star-button").click(function() {
       var button = $(this);
-      var taskID = $(this).closest('div#details-placeholder').find('.task-id').text();
+      var taskID = $(this).closest('div#task-details-container').find('.task-id').text();
       var status = button.hasClass("yes") ? "no" : "yes";
       var title = status == "yes" ? "Star task" : "Unstar task";
       var text = status == "yes" ? "Do you want to star this task?" : "Do you want to unstar this task?";
@@ -250,7 +254,7 @@ if (starButton.classList.contains('yes')) {
 <script>
   $('.setComplete').on('click', function() {
       // Get the task ID from the row
-      var taskID = $(this).closest('div#details-placeholder').find('.task-id').text();
+      var taskID = $(this).closest('div#task-details-containe').find('.task-id').text();
 
       Swal.fire({
       title: "Task Completed?",

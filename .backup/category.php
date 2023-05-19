@@ -31,58 +31,41 @@ if (!$conn) {
 // mysqli_close($conn);
 ?>
 
-<div class="section-title">
-      <h1>Categories</h1>
-    </div>
+
 
 <button type="button" class="add-btn myButton" onclick='openForm()'>+ Add category</button>
 
   <div class="container-fluid">
-    <div class="task-container">
-        <div class="category-list">
-            <div class='searchbox'>
-              <input type="text" placeholder='Search...' id='search-input'/>
-            </div>
-            <hr>
-            <ul id="category-list">
+    <div class="category-container">
 
-                <?php
-                $conn = mysqli_connect($servername, $username, $password, $dbname);  // Connect to the database again
-                if (!$conn) { die("Connection failed: " . mysqli_connect_error()); } // Check connection again
-                    
-                $id = $_SESSION['id'];
+        <?php
+        $conn = mysqli_connect($servername, $username, $password, $dbname);  // Connect to the database again
+        if (!$conn) { die("Connection failed: " . mysqli_connect_error()); } // Check connection again
+            
+        $id = $_SESSION['id'];
 
-                // SQL query to retrieve categories from database table
-                $info_sql = "SELECT * FROM categories WHERE trash='0' AND id = '$id'";   
-                $info_result = mysqli_query($conn, $info_sql);
-                
-                if (mysqli_num_rows($info_result) > 0) { // Display the information in the HTML table
-                    while ($row = mysqli_fetch_assoc($info_result)) {
-                      echo "<li class='task'style='color: black' id='".$row['categoryID']."' uid='".$row['id']."'>".$row['category']."";
-                      echo "<p class='description'>".$row["categoryDetails"]."</p>
-                      </li>";
-                      echo '<input class="catID" type="hidden" value="'.$row["categoryID"].'">';
-                }} else {
-                    echo "<option>No results</option>";
-                  }
-                  // Close the database connection again
-                  mysqli_close($conn);
-              ?>
-            </ul>
-        </div>
-
-        <div class="task-list">
-          <div id="task-placeholder">
-              <p style='color: black'>Select a task to view its details.</p>
-          </div>
-        </div>
-
-        <div class="task-details">
-        <div id="task-details-container">
-              <p style='color: black'>Select a task to view its details.</p>
-          </div>
-        </div>
-
+        // SQL query to retrieve categories from database table
+        $info_sql = "SELECT * FROM categories WHERE trash='0' AND id = '$id'";   
+        $info_result = mysqli_query($conn, $info_sql);
+        
+        if (mysqli_num_rows($info_result) > 0) { // Display the information in the HTML table
+            while ($row = mysqli_fetch_assoc($info_result)) {
+                echo '<div class="category-subcontainer">';
+                  echo '<h2>'.$row["category"].'</h2>';
+                  echo '<p class="category-description">'.$row["categoryDetails"].'</p>';
+                  echo '<input class="catID" type="hidden" value="'.$row["categoryID"].'">';
+                  echo '<div class="view-button-container">
+                          <button class="view-button">View</button>
+                          <button class="view-button-delete">Delete</button>
+                        </div>';
+                echo '</div>';
+            }
+        } else {
+            echo "<option>No results</option>";
+          }
+          // Close the database connection again
+          mysqli_close($conn);
+      ?>
     </div>
   </div>
 
@@ -97,17 +80,17 @@ if (!$conn) {
     <!-- <h2>Add new category</h2> -->
     <!-- <span class="close">&times;</span> -->
     <form method="POST" action="../backend/addCategory.php">
-        <div class="add-form">
-            <h1 class='text-label' style="text-align: center;">Add new category</h1>
-            <p class='text-label' style="text-align: center;">Please fill in this form to create a new category.</p>
+        <div class="container-category">
+            <h1 class='text' style="text-align: center;">Add new category</h1>
+            <p class='text' style="text-align: center;">Please fill in this form to create a new category.</p>
             <hr>
 
-            <label class='text-label' for="category">Title</label>
-            <input type="text" placeholder="Enter category title" name="category" id="category" maxlength="25" required>
+            <label for="category"><b class='text'>Title</b></label>
+            <input type="text" placeholder="Enter category title" name="category" id="category" required>
 
-            <label class='text-label' for="categoryDetails">Description</label>
-            <input type="text" placeholder="Enter description" name="categoryDetails" id="categoryDetails" maxlength="40" required>
-            <p class='text-label' > <span class="GFG text-label">40</span> Characters Remaining</p>
+            <label for="categoryDetails"><b class='text'>Description</b></label>
+            <input type="text" placeholder="Enter description" name="categoryDetails" id="categoryDetails" maxlength="60" required>
+            <p class='text'> <span class="GFG text">60</span> Characters Remaining</p>
             <hr>
 
           <div class="btn">
@@ -134,83 +117,6 @@ if (!$conn) {
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
-
-<!-- THIS IS FOR DISPLAYING THE TASK DETAILS -->
-<script>
-  $(document).ready(function() {
-
-    // Load tasks when a category is clicked
-    $(document).on("click", ".category-list li", function() {
-      var catID = $(this).attr("id");
-      var id = $(this).attr("uid");
-      loadTasks(catID, id);
-    });
-
-    // Load task details when a task is clicked
-    $(document).on("click", ".task-list li", function() {
-      var taskID = $(this).attr("id");
-      var id = $(this).attr("uid");
-      loadTaskDetails(taskID, id);
-    });
-  });
-
-
-
-  function loadTasks(catID, id) {
-    $.ajax({
-      url: "../backend/getCategory.php", // Update the URL to point to the correct PHP file
-      type: "POST",
-      data: { catID: catID, id: id },
-      success: function(data) {
-        $(".task-list").html(data);
-      }
-    });
-  }
-
-  function loadTaskDetails(taskID, id) {
-    $.ajax({
-      url: "../backend/getTaskDetails.php", // Update the URL to point to the correct PHP file
-      type: "POST",
-      data: { taskID: taskID, id: id },
-      success: function(data) {
-        $("div#task-details-container").html(data);
-      }
-    });
-  }
-
-
-</script>
-
-<script>
-  function searchTasks() {
-    var input, filter, ul, li, a, i, txtValue;
-    input = document.getElementById('search-input');
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("category-list");
-    li = ul.getElementsByTagName('li');
-
-    // Loop through all list items, and hide those that don't match the search query
-    for (i = 0; i < li.length; i++) {
-      a = li[i].getElementsByTagName("p")[0];
-      txtValue = a.textContent || a.innerText;
-      txtValue = txtValue.toUpperCase() + li[i].textContent.toUpperCase();
-      if (txtValue.indexOf(filter) > -1) {
-        li[i].style.display = "";
-      } else {
-        li[i].style.display = "none";
-      }
-    }
-  }
-
-  // Call the searchTasks function when the user presses the enter key or deletes all the input
-  document.getElementById("search-input").addEventListener("keyup", function(event) {
-    if (event.key === "Enter" || this.value.length === 0) {
-      searchTasks();
-    }
-  });
-</script>
 
 <script>
   const viewButtons = document.querySelectorAll('.view-button');
@@ -297,7 +203,7 @@ if (!$conn) {
 <script>
 
   $(document).ready(function () {
-          var max_length = 40;
+          var max_length = 60;
           $('#categoryDetails').keyup(function () {
               var len = max_length - $(this).val().length;
               $('.GFG').text(len);
