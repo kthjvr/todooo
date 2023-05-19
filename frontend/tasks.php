@@ -71,7 +71,6 @@ mysqli_close($conn);
                   echo "<p class='description'>".$row["taskDescription"]."</p>
                   </li>";
                   echo "<p class='task-id' hidden>".$row['taskID']."</p>";
-                  // echo "<hr>";
                 }
               } 
             ?>
@@ -149,8 +148,9 @@ mysqli_close($conn);
       </table> -->
     </div>
   </div>
+  </section>
 </div>
-</section>
+
 
 
 <!-- THIS IS FOR UPDATE MODAL -->

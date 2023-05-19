@@ -64,13 +64,14 @@ mysqli_close($conn);
                 $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus='Completed'"; //retrieve info from db
                 $info_result = mysqli_query($conn, $info_sql);
                 
-                // Loop through task names and create list items
+                // Display the information in the HTML table
+              if (mysqli_num_rows($info_result) > 0) {
                 while($row = mysqli_fetch_assoc($info_result)) {
-                  echo "<li class='task' data-priority='".$row['priority_stat']."' data-starred='".$row['starred']."' style='color: black' id='".$row['taskID']."'>".$row['taskName']."";
+                  echo "<li class='task' data-priority='".$row['priority_stat']."' data-starred='".$row['starred']."' style='color: black' id='".$row['taskID']."' uid='".$row['id']."'>".$row['taskName']."";
                   echo "<p class='description'>".$row["taskDescription"]."</p>
                   </li>";
                   echo "<p class='task-id' hidden>".$row['taskID']."</p>";
-                  // echo "<hr>";
+                }
                 }
             ?>
           </ul>
@@ -147,8 +148,9 @@ mysqli_close($conn);
       </table> -->
     </div>
   </div>
-</div>
 </section>
+</div>
+
 
 
 <!-- THIS IS FOR UPDATE MODAL -->
@@ -174,14 +176,14 @@ mysqli_close($conn);
         <div class="form_wrap form_grp">
           <div class="form_item">
             <label for="task-name">Task Name</label>
-            <input type="text" placeholder="Title" id="task-name" name="task-name"/>
+            <input type="text" placeholder="Title" id="task-name" name="task-name" required/>
           </div>
         </div>
 
         <div class="form_wrap form_grp">
           <div class="form_item">
             <label for="task-description">Task Description</label>
-            <textarea id="task-description" name="task-description" placeholder="Add description" maxlength="300"></textarea>
+            <textarea id="task-description" name="task-description" placeholder="Add description" maxlength="300" required></textarea>
             <p><span class="GFG">300</span> Characters Remaining</p>
           </div>
         </div>
@@ -189,8 +191,8 @@ mysqli_close($conn);
         <div class="form_wrap form_grp">
           <div class="form_item">
             <label for="starred">Marked as important?</label>
-              <select id="starred" name="starred">
-                  <option selected disabled>Select importance...</option>
+              <select id="starred" name="starred" required>
+                  <option selected disabled value="">Select importance...</option>
                   <option id="yesstarred" for="yesstarred" value="yes">Yes</option>
                   <option id="notStarred" for="notStarred" value="no">No</option>
               </select>
@@ -198,8 +200,8 @@ mysqli_close($conn);
 
           <div class="form_item">
             <label for="priority_stat">Priority</label>
-                <select id="priority_stat" name="priority_stat">
-                <option selected disabled>Select priority status...</option>
+                <select id="priority_stat" name="priority_stat" required>
+                <option selected disabled value="">Select priority status...</option>
                     <option id="extreme-priority" name="priority_stat" value="extreme">Extreme</option>
                     <option id="high-priority" name="priority_stat" value="high">High</option>
                     <option id="medium-priority" name="priority_stat" value="medium">Medium</option>
@@ -210,9 +212,9 @@ mysqli_close($conn);
 
         <div class="form_wrap form_grp">
           <div class="form_item">
-            <label>Category</label>
-            <select id="category" name="category">
-            <option selected disabled>Select category...</option>
+            <label for='category'>Category</label>
+            <select id="category" name="category" required>
+            <option selected disabled value=''>Select category...</option>
             <?php
               $conn = mysqli_connect($servername, $username, $password, $dbname);  // Connect to the database again
               if (!$conn) { die("Connection failed: " . mysqli_connect_error()); } // Check connection again
@@ -226,7 +228,7 @@ mysqli_close($conn);
               if (mysqli_num_rows($info_result) > 0) { // Display the information in the HTML table
                   while ($row = mysqli_fetch_assoc($info_result)) {
                       // echo "<option>".$id."</option>";
-                      echo "<option value='".$row["categoryID"]."' name='category' id='".$row["category"]."'>".$row["category"]."</option>";
+                      echo "<option value='".$row["categoryID"]."' name='category'>".$row["category"]."</option>";
                   }
               } else {
                   echo "<option>No results</option>";
@@ -241,7 +243,7 @@ mysqli_close($conn);
             <label for="endDate">End Date</label>
             <?php
               $current_date = date('Y-m-d'); // get current date
-              echo '<input type="date" id="endDate" name="endDate" min="'.$current_date.'"/>';
+              echo '<input type="date" id="endDate" name="endDate" min="'.$current_date.'" required/>';
             ?>
           </div>
         </div>
@@ -368,25 +370,35 @@ mysqli_close($conn);
   $(document).ready(function() {
     // Load task details for the first task on page load
     var firstTaskID = $(".task-list li:first").attr("id");
-    loadTaskDetails(firstTaskID);
+    var id = $(".task-list li:first").attr("uid");
+    console.log(id)
+    loadTaskDetails(firstTaskID, id);
 
     // Load task details when a task is clicked
     $(".task-list li").click(function() {
       var taskID = $(this).attr("id");
-      loadTaskDetails(taskID);
+      var id = $(this).attr("uid");
+      console.log(id)
+      loadTaskDetails(taskID, id);
     });
   });
 
-  function loadTaskDetails(taskID) {
+  function loadTaskDetails(taskID, id) {
+  var taskList = $("#task-list");
+  if (taskList.children().length == 0) { // Check if the task list is empty
+    $("#details-placeholder").html("<p style='color: black'>No tasks found. Please add one.</p>");
+  } else {
     $.ajax({
-      url: "../backend/completed_get_task_details.php",
+      url: "../backend/get_task_details.php",
       type: "POST",
-      data: { taskID: taskID },
+      data: { taskID: taskID, id: id },
       success: function(data) {
         $("#details-placeholder").html(data);
       }
     });
   }
+}
+
 </script>
 
 <!-- THIS IS FOR MOVING TASK TO TRASH -->
@@ -624,8 +636,13 @@ mysqli_close($conn);
 
     // Check if task name is empty
     const taskName = document.querySelector('#task-name').value;
+  // const taskNameErrorMessage = taskNameInput.parentElement.querySelector('.error-message');
+
     if (taskName.trim() === '') {
       alert('Task name cannot be empty');
+    // taskName.classList.add('error');
+    // taskNameErrorMessage.textContent = 'Task name cannot be empty';
+    // taskNameErrorMessage.style.display = 'block';
       formIsValid = false;
     }
 
@@ -649,8 +666,22 @@ mysqli_close($conn);
       formIsValid = false;
     }
 
+  const priorityStat = document.querySelector('#priority_stat').value;
+  if (priorityStat.trim() === '') {
+    alert('Priority status cannot be empty');
+    formIsValid = false;
+  }
+
+  // Check if category is empty
+  const category = document.querySelector('#category option:checked').value;
+  if (category.trim() === '') {
+    alert('Category cannot be empty');
+    formIsValid = false;
+  }
+
     return formIsValid;
   }
+
 </script>
 
 <!-- THIS IS FOR SORTING CATEGORY IN THE TABLE -->
