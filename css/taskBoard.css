@@ -1053,3 +1053,7 @@ div#details-placeholder {
   color: gold;
 }
 
+.notice{
+  color: red;
+  /* opacity: 0.5; */
+}

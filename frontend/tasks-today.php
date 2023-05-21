@@ -61,7 +61,8 @@ mysqli_close($conn);
                   
                 $id = $_SESSION['id'];
                   
-                $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND mytasks.endDate='".$current_date."'"; //retrieve info from db
+                $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id 
+                AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND mytasks.endDate='".$current_date."'"; //retrieve info from db
                 $info_result = mysqli_query($conn, $info_sql);
                 
                 // Display the information in the HTML table

@@ -14,6 +14,7 @@ const search = document.querySelector("#search");
 const dashboard = document.querySelector("#dashboard");
 const today = document.querySelector("#today");
 const important = document.querySelector("#important");
+const due = document.querySelector("#due");
 const booklog = document.querySelector("#booklog");
 const add = document.querySelector("#add");
 const category = document.querySelector("#category");
@@ -41,6 +42,11 @@ today.addEventListener("click", (e) => {
 important.addEventListener("click", (e) => {
   toggleMenu(important);
   window.location.href = "../frontend/tasks-starred.php";
+});
+
+due.addEventListener("click", (e) => {
+  toggleMenu(due);
+  window.location.href = "../frontend/task-due.php";
 });
 
 booklog.addEventListener("click", (e) => {
@@ -130,6 +136,13 @@ const openMenu = () => {
   important.style.justifyContent = "left";
   important.appendChild(p_important);
 
+  let p_due = document.createElement("p");
+  p_due.id = "p-due";
+  p_due.innerHTML = "Task Overdue";
+  due.style.width = "220px";
+  due.style.justifyContent = "left";
+  due.appendChild(p_due);
+
   let p_booklog = document.createElement("p");
   p_booklog.id = "p-booklog";
   p_booklog.innerHTML = "Archive";
@@ -218,6 +231,10 @@ const closeMenu = () => {
   important.removeChild(document.getElementById("p-important"));
   important.style.width = "50px";
   important.style.justifyContent = "center";
+
+  due.removeChild(document.getElementById("p-due"));
+  due.style.width = "50px";
+  due.style.justifyContent = "center";
 
   booklog.removeChild(document.getElementById("p-booklog"));
   booklog.style.width = "50px";

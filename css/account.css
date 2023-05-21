@@ -12,7 +12,7 @@
   box-sizing: border-box;
   font-family: 'Montserrat', sans-serif;
   /* color: #0F044C; */
-  font-family: 'Merriweather', serif;
+  /* font-family: 'Merriweather', serif; */
 }
 
 body {
@@ -316,4 +316,39 @@ div.container-side a{
   font-size: 14px;
   color: red;
   margin-left: 10px;
+  }
+
+  .upload-dialog {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .upload-dialog-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 300px;
+  }
+
+  .upload-dialog-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .upload-dialog-close:hover,
+  .upload-dialog-close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
   }

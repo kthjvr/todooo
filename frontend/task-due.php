@@ -33,7 +33,7 @@ mysqli_close($conn);
 
 
     <div class="section-title">
-      <h1>Completed Tasks</h1>
+      <h1>Task Overdue</h1>
     </div>
     <!-- FOR SORT BUTTONS -->
     <div class="container2">
@@ -61,18 +61,21 @@ mysqli_close($conn);
                   
                 $id = $_SESSION['id'];
                   
-                $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus='Completed'"; //retrieve info from db
+                $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' 
+                AND mytasks.currentStatus!='Completed' AND mytasks.endDate < '$current_date'"; //retrieve info from db
                 $info_result = mysqli_query($conn, $info_sql);
                 
                 // Display the information in the HTML table
               if (mysqli_num_rows($info_result) > 0) {
                 while($row = mysqli_fetch_assoc($info_result)) {
+                        // Add the notice if the task is overdue
                   echo "<li class='task' data-priority='".$row['priority_stat']."' data-starred='".$row['starred']."' style='color: black' id='".$row['taskID']."' uid='".$row['id']."'>".$row['taskName']."";
                   echo "<p class='description'>".$row["taskDescription"]."</p>
                   </li>";
                   echo "<p class='task-id' hidden>".$row['taskID']."</p>";
+                  // echo "<hr>";
                 }
-                }
+              } 
             ?>
           </ul>
         </div>
@@ -106,7 +109,7 @@ mysqli_close($conn);
               
             $id = $_SESSION['id'];
               
-            $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND mytasks.endDate='".$current_date."'"; //retrieve info from db
+            $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed'"; //retrieve info from db
             $info_result = mysqli_query($conn, $info_sql);
             
             if (mysqli_num_rows($info_result) > 0) { // Display the information in the table
@@ -148,9 +151,8 @@ mysqli_close($conn);
       </table> -->
     </div>
   </div>
-</section>
 </div>
-
+</section>
 
 
 <!-- THIS IS FOR UPDATE MODAL -->
@@ -319,7 +321,7 @@ mysqli_close($conn);
     for (let i = 0; i < sortedTasks.length; i++) {
         taskList.appendChild(sortedTasks[i]);
     }
-  }
+}
 
 </script>
 
@@ -389,7 +391,7 @@ mysqli_close($conn);
     $("#details-placeholder").html("<p style='color: black'>No tasks found. Please add one.</p>");
   } else {
     $.ajax({
-      url: "../backend/completed_get_task_details.php",
+      url: "../backend/get_task_details.php",
       type: "POST",
       data: { taskID: taskID, id: id },
       success: function(data) {
@@ -632,39 +634,39 @@ mysqli_close($conn);
   });
 
   function validateForm() {
-    let formIsValid = true;
+  let formIsValid = true;
 
-    // Check if task name is empty
-    const taskName = document.querySelector('#task-name').value;
+  // Check if task name is empty
+  const taskName = document.querySelector('#task-name').value;
   // const taskNameErrorMessage = taskNameInput.parentElement.querySelector('.error-message');
 
-    if (taskName.trim() === '') {
-      alert('Task name cannot be empty');
+  if (taskName.trim() === '') {
+    alert('Task name cannot be empty');
     // taskName.classList.add('error');
     // taskNameErrorMessage.textContent = 'Task name cannot be empty';
     // taskNameErrorMessage.style.display = 'block';
-      formIsValid = false;
-    }
+    formIsValid = false;
+  }
 
-    // Check if task description is empty
-    const taskDescription = document.querySelector('#task-description').value;
-    if (taskDescription.trim() === '') {
-      alert('Task description cannot be empty');
-      formIsValid = false;
-    }
+  // Check if task description is empty
+  const taskDescription = document.querySelector('#task-description').value;
+  if (taskDescription.trim() === '') {
+    alert('Task description cannot be empty');
+    formIsValid = false;
+  }
 
-    // Check if end date is empty
-    const endDate = document.querySelector('#endDate').value;
-    if (endDate.trim() === '') {
-      alert('End date cannot be empty');
-      formIsValid = false;
-    }
+  // Check if end date is empty
+  const endDate = document.querySelector('#endDate').value;
+  if (endDate.trim() === '') {
+    alert('End date cannot be empty');
+    formIsValid = false;
+  }
 
-    const starred = document.querySelector('#starred').value;
-    if (starred.trim() === '') {
-      alert('Marked as important cannot be empty');
-      formIsValid = false;
-    }
+  const starred = document.querySelector('#starred').value;
+  if (starred.trim() === '') {
+    alert('Marked as important cannot be empty');
+    formIsValid = false;
+  }
 
   const priorityStat = document.querySelector('#priority_stat').value;
   if (priorityStat.trim() === '') {
@@ -679,8 +681,8 @@ mysqli_close($conn);
     formIsValid = false;
   }
 
-    return formIsValid;
-  }
+  return formIsValid;
+}
 
 </script>
 

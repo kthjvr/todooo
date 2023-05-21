@@ -12,7 +12,6 @@
   $result = mysqli_query($conn, $sql);
   $row = mysqli_fetch_assoc($result);
 
-  // echo "<p>".$row['id']."</p>";
 
   echo "<h1 class='task-title'>".$row['taskName']."</h1>
   <p class='task-id' hidden>".$row['taskID']."</p>

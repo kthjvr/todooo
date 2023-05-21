@@ -21,16 +21,24 @@ if (isset($_SESSION['loggedin'])) {
         die("Connection failed: " . mysqli_connect_error());
     }
 
-    // Insert the data into the tasks table with the user ID
-    $sql = "INSERT INTO categories (id, category, categoryDetails)
-    VALUES ('$id', '$category', '$categoryDetails')";
-    if (mysqli_query($conn, $sql)) {
+    // Prepare the SQL statement with placeholders
+    $sql = "INSERT INTO categories (id, category, categoryDetails) VALUES (?, ?, ?)";
+
+    // Prepare the statement
+    $stmt = mysqli_prepare($conn, $sql);
+
+    // Bind parameters to the prepared statement
+    mysqli_stmt_bind_param($stmt, "iss", $id, $category, $categoryDetails);
+
+    // Execute the statement
+    if (mysqli_stmt_execute($stmt)) {
         header("Location: ../frontend/category.php");
     } else {
-        echo "Error inserting data: " . mysqli_error($conn);
+        echo "Error inserting data: " . mysqli_stmt_error($stmt);
     }
 
-    // Close the database connection
+    // Close the statement and the database connection
+    mysqli_stmt_close($stmt);
     mysqli_close($conn);
 
 
@@ -41,8 +49,3 @@ if (isset($_SESSION['loggedin'])) {
 }
 
 ?>
-
-
-
-
-

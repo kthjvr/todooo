@@ -61,62 +61,68 @@ $taskCount = $row['taskCount'];
                 <h1>Hi, <?php echo $_SESSION['username']; ?></h1>
                 <div class="content">
                     <p class="reminder">You still have <span id="taskCount">10</span> tasks due this week</p>
-                    <img src="../images/avatar/<?php echo $_SESSION['avatar']; ?>" alt="avatar">
+                    <img src="<?php echo $_SESSION['avatar']; ?>" alt="avatar">
                 </div>
             </div>
 
             <div class="dailyq">
-                <h3>Daily Affirmations</h3>
+                <h3 class='title'>Daily Affirmations</h3>
                 <p class='quotes'></p>
             </div>
 
-            <div class="datetime"></div>
+            <div class="datetime">
+              <span class="clock-icon">&#128339;</span>
+              <span class="time"></span>
+              <span class="calendar-icon">&#128197;</span>
+              <span class="date"></span>
+            </div>
+
             <div class="auto-jsCalendar calendar" id="calendar" style='color: black;'></div>
 
             <div class="analytics">
 
-            <?php
-              $id = $_SESSION['id'];
+                <?php
+                  $id = $_SESSION['id'];
 
-              // Get the total number of tasks
-              $query = "SELECT COUNT(*) AS countTotal FROM mytasks WHERE id = $id AND trash = 0";
-              $result = $mysqli->query($query);
-              $row = $result->fetch_assoc();
-              $totalTasks = $row['countTotal'];
+                  // Get the total number of tasks
+                  $query = "SELECT COUNT(*) AS countTotal FROM mytasks WHERE id = $id AND trash = 0";
+                  $result = $mysqli->query($query);
+                  $row = $result->fetch_assoc();
+                  $totalTasks = $row['countTotal'];
 
-              if ($totalTasks > 0) {
-                // Get the number of completed tasks
-                $query = "SELECT COUNT(*) AS countCompleted FROM mytasks WHERE id = $id AND trash = 0 AND currentStatus='Completed'";
-                $bresult = $mysqli->query($query);
-                $brow = $bresult->fetch_assoc();
-                $completedTasks = $brow['countCompleted'];
+                  if ($totalTasks > 0) {
+                    // Get the number of completed tasks
+                    $query = "SELECT COUNT(*) AS countCompleted FROM mytasks WHERE id = $id AND trash = 0 AND currentStatus='Completed'";
+                    $bresult = $mysqli->query($query);
+                    $brow = $bresult->fetch_assoc();
+                    $completedTasks = $brow['countCompleted'];
 
-                // Get the number of tasks in progress
-                $query = "SELECT COUNT(*) AS countInprogress FROM mytasks WHERE id = $id AND trash = 0 AND currentStatus='In Progress'";
-                $bresult = $mysqli->query($query);
-                $brow = $bresult->fetch_assoc();
-                $inProgressTasks = $brow['countInprogress'];
+                    // Get the number of tasks in progress
+                    $query = "SELECT COUNT(*) AS countInprogress FROM mytasks WHERE id = $id AND trash = 0 AND currentStatus='In Progress'";
+                    $bresult = $mysqli->query($query);
+                    $brow = $bresult->fetch_assoc();
+                    $inProgressTasks = $brow['countInprogress'];
 
-                // Get the number of pending tasks
-                $query = "SELECT COUNT(*) AS countPending FROM mytasks WHERE id = $id AND trash = 0 AND currentStatus='Not Started'";
-                $bresult = $mysqli->query($query);
-                $brow = $bresult->fetch_assoc();
-                $notStartedTasks = $brow['countPending'];
+                    // Get the number of pending tasks
+                    $query = "SELECT COUNT(*) AS countPending FROM mytasks WHERE id = $id AND trash = 0 AND currentStatus='Not Started'";
+                    $bresult = $mysqli->query($query);
+                    $brow = $bresult->fetch_assoc();
+                    $notStartedTasks = $brow['countPending'];
 
-                // Calculate the percentages
-                $completedPercentage = round(($completedTasks / $totalTasks) * 100, 0);
-                $inProgressPercentage = round(($inProgressTasks / $totalTasks) * 100, 0);
-                $notStartedPercentage = round(($notStartedTasks / $totalTasks) * 100, 0);
-              } else {
-                // Set default values when there are no tasks
-                $completedTasks = 0;
-                $inProgressTasks = 0;
-                $notStartedTasks = 0;
-                $completedPercentage = 0;
-                $inProgressPercentage = 0;
-                $notStartedPercentage = 0;
-              }
-            ?>
+                    // Calculate the percentages
+                    $completedPercentage = round(($completedTasks / $totalTasks) * 100, 0);
+                    $inProgressPercentage = round(($inProgressTasks / $totalTasks) * 100, 0);
+                    $notStartedPercentage = round(($notStartedTasks / $totalTasks) * 100, 0);
+                  } else {
+                    // Set default values when there are no tasks
+                    $completedTasks = 0;
+                    $inProgressTasks = 0;
+                    $notStartedTasks = 0;
+                    $completedPercentage = 0;
+                    $inProgressPercentage = 0;
+                    $notStartedPercentage = 0;
+                  }
+                ?>
 
                 <div class="progress-container">
                   <div role="progressbar inprogress" aria-valuenow="<?= $inProgressPercentage ?>" aria-valuemin="0" aria-valuemax="<?= $totalTasks ?>" style="--value:<?= $inProgressPercentage ?>"></div>
@@ -139,13 +145,139 @@ $taskCount = $row['taskCount'];
 
             </div>
 
+            <div class="overview">
+              <div class="overview-container">
+              <p>Weekly Task Overview</p>
+              <?php
+                  $id = $_SESSION['id'];
+
+                  // Get the current week's start and end dates
+                  $startOfWeek = date('Y-m-d', strtotime('monday this week'));
+                  $endOfWeek = date('Y-m-d', strtotime('sunday this week'));
+                
+                  // Query to get the number of tasks added for the week
+                  $queryAdded = "SELECT COUNT(*) AS addedTasks FROM mytasks WHERE DATE(createdAt) BETWEEN '$startOfWeek' AND '$endOfWeek' AND id=$id";
+                  $resultAdded = mysqli_query($conn, $queryAdded);
+                  $addedTasks = mysqli_fetch_assoc($resultAdded)['addedTasks'];
+                
+                  // Query to get the number of completed tasks for the week
+                  $queryCompleted = "SELECT COUNT(*) AS completedTasks FROM mytasks WHERE DATE(createdAt) BETWEEN '$startOfWeek' AND '$endOfWeek' AND currentStatus = 'Completed'  AND id=$id";
+                  $resultCompleted = mysqli_query($conn, $queryCompleted);
+                  $completedTasks = mysqli_fetch_assoc($resultCompleted)['completedTasks'];
+                
+                  // Query to get the number of discarded tasks for the week
+                  $queryDiscarded = "SELECT COUNT(*) AS discardedTasks FROM mytasks WHERE DATE(createdAt) BETWEEN '$startOfWeek' AND '$endOfWeek' AND currentStatus = 'Discarded'  AND id=$id";
+                  $resultDiscarded = mysqli_query($conn, $queryDiscarded);
+                  $discardedTasks = mysqli_fetch_assoc($resultDiscarded)['discardedTasks'];
+                ?>
+                
+                <div class="overview-item">
+                  <span class="item-label">New Tasks Added:</span>
+                  <span class="item-value"><?php echo $addedTasks; ?></span>
+                </div>
+                
+                <div class="overview-item">
+                  <span class="item-label">Tasks Completed:</span>
+                  <span class="item-value"><?php echo $completedTasks; ?></span>
+                </div>
+                
+                <div class="overview-item">
+                  <span class="item-label">Tasks Discarded:</span>
+                  <span class="item-value"><?php echo $discardedTasks; ?></span>
+                </div>
+              </div>
+              
 
 
-
-        <div class="events"></div>
+            </div>
         
-        <div class="duetoday"></div>
-        <div class="overdue"></div>
+            <div class="duetoday">
+              <p class='title'>Task needed to be done today</p>
+              <a href="tasks-today.php">View All ></a>
+              <div class="duetoday-container">
+                <ul id="task-list">
+                  <?php
+                    $id = $_SESSION['id'];
+                    $current_date = date('Y-m-d');
+                    $queryToday = "SELECT taskName FROM mytasks WHERE id = $id AND endDate='".$current_date."' AND trash='0' AND currentStatus != 'Completed'";
+                    $resultToday = mysqli_query($conn, $queryToday);
+                    
+                    // Display the information in the HTML table
+                  if (mysqli_num_rows($resultToday) > 0) {
+                    while($row = mysqli_fetch_assoc($resultToday)) {
+                      echo "<li class='task' style='color: black'>".$row['taskName']."</li>";
+                    }
+                  } else {
+                    echo "<li class='task' style='color: black'>No results</li>";
+                  }
+                  ?>
+                </ul>
+              </div>
+
+
+            </div>
+
+            <div class="overdue">
+              <p class='title'>Overdue Tasks</p>
+              <a href="task-due.php">View All ></a>
+              <div class="due-container">
+                <ul id="task-list">
+                  <?php
+                    $id = $_SESSION['id'];
+                    $current_date = date('Y-m-d');
+                    $queryToday = "SELECT taskName FROM mytasks WHERE id = $id AND endDate < '$current_date' AND trash='0' AND currentStatus != 'Completed'";
+                    $resultToday = mysqli_query($conn, $queryToday);
+                    
+                    // Display the information in the HTML table
+                  if (mysqli_num_rows($resultToday) > 0) {
+                    while($row = mysqli_fetch_assoc($resultToday)) {
+                      echo "<li class='task' style='color: black'>".$row['taskName']."</li>";
+                    }
+                  } else {
+                    echo "<li class='task' style='color: black'>No results</li>";
+                  }
+                  ?>
+                </ul>
+              </div>
+            </div>
+
+            <div class="importanttask">
+              <p class='title'>Important Tasks</p>
+              <a href="tasks-starred.php">View All ></a>
+              <div class="important-container">
+                <ul id="task-list">
+                  <?php
+                    $id = $_SESSION['id'];
+                    $queryStar = "SELECT taskName FROM mytasks WHERE id = $id AND starred='yes' AND trash='0' AND currentStatus != 'Completed'";
+                    $resultStar = mysqli_query($conn, $queryStar);
+                    
+                    // Display the information in the HTML table
+                  if (mysqli_num_rows($resultStar) > 0) {
+                    while($row = mysqli_fetch_assoc($resultStar)) {
+                      echo "<li class='task' style='color: black'>".$row['taskName']."</li>";
+                    }
+                  } else {
+                    echo "<li class='task' style='color: black'>No results</li>";
+                  }
+                  ?>
+                </ul>
+              </div>
+            </div>
+
+            <div class="notes">
+              <p class='title'>Notepad</p>
+              <div class="notes-container">
+                <?php
+                  $id = $_SESSION['id'];
+                  $queryNotes = "SELECT noteContent FROM mynotes WHERE id = $id";
+                  $resultNotes = mysqli_query($conn, $queryNotes);
+                  $initialNotes = mysqli_fetch_assoc($resultNotes)['noteContent'];
+                ?>
+                <textarea id="notes-box" placeholder="Write your notes here"><?php echo $initialNotes?></textarea>
+              </div>
+            </div>
+
+
     </div>
 
 
@@ -153,46 +285,102 @@ $taskCount = $row['taskCount'];
 </div>
 
 
+<script>
+  // Get the notes box element
+  const notesBox = document.getElementById('notes-box');
+
+  // Set the initial content of the notes box from the database or any other source
+  // For example:
+  // notesBox.value = 'Initial notes content';
+
+  // Save the notes after a certain delay
+  let timeoutId;
+  notesBox.addEventListener('input', function() {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(saveNotes, 3000);
+  });
+
+  // Function to save the notes
+  function saveNotes() {
+    const noteContent = notesBox.value;
+    const userID = '5';
+    console.log(userID)
+
+    // Send an AJAX request to the server to save the notes
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '../backend/save_notes.php');
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        const response = JSON.parse(xhr.responseText);
+        if (response.status === 'success') {
+          // showAutoSavedMessage();
+        } else {
+          console.error('Error saving notes');
+        }
+      } else {
+        console.error('Request failed. Status:', xhr.status);
+      }
+    };
+    const params = 'noteContent=' + encodeURIComponent(noteContent) + '&id=' + encodeURIComponent(userID);
+    xhr.send(params);
+  }
+
+  // Function to show the auto-saved message
+  function showAutoSavedMessage() {
+    const message = document.createElement('span');
+    message.classList.add('autosave-message');
+    message.textContent = 'Auto-saved ✓';
+
+    const existingMessage = document.querySelector('.autosave-message');
+    if (existingMessage) {
+      existingMessage.parentNode.removeChild(existingMessage);
+    }
+
+    notesBox.parentNode.appendChild(message);
+  }
+</script>
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-    var datetimeContainer = document.querySelector(".datetime");
-    var calendarContainer = document.querySelector(".calendar");
+document.addEventListener("DOMContentLoaded", function() {
+    var timeContainer = document.querySelector(".time");
+    var dateContainer = document.querySelector(".date");
 
     // Function to format the current time
     function formatTime(date) {
-        var hours = date.getHours();
-        var minutes = date.getMinutes();
-        var ampm = hours >= 12 ? "pm" : "am";
-        hours = hours % 12;
-        hours = hours ? hours : 12;
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        var timeString = hours + ":" + minutes + ampm;
-        return timeString;
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var ampm = hours >= 12 ? "pm" : "am";
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      var timeString = hours + ":" + minutes + ampm;
+      return timeString;
     }
 
     // Function to format the current date
     function formatDate(date) {
-        var options = { weekday: "long", month: "short", day: "numeric" };
-        var dateString = date.toLocaleDateString(undefined, options);
-        return dateString;
+      var options = { weekday: "long", month: "short", day: "numeric" };
+      var dateString = date.toLocaleDateString(undefined, options);
+      return dateString;
     }
 
     // Function to update the datetime
     function updateDateTime() {
-        var currentTime = new Date();
-        var timeString = formatTime(currentTime);
-        var dateString = formatDate(currentTime);
-        var dateTimeString = timeString + ", " + dateString;
-        datetimeContainer.textContent = dateTimeString;
+      var currentTime = new Date();
+      var timeString = formatTime(currentTime);
+      var dateString = formatDate(currentTime);
+      timeContainer.textContent = timeString;
+      dateContainer.textContent = dateString;
     }
+
     // Initial update
     updateDateTime();
 
     // Update datetime every second
     setInterval(updateDateTime, 1000);
-    });
+  });
 
 </script>
 
