@@ -30,19 +30,25 @@ if (isset($_SESSION['loggedin'])) {
         die("Connection failed: " . mysqli_connect_error());
     }
 
-    // Generate JavaScript code to display a SweetAlert message
+    // Prepare the SQL statement with placeholders
+    $sql = "UPDATE mytasks SET taskName=?, taskDescription=?, endDate=?, priority_stat=?, starred=?, categoryID=?, trash='0' WHERE taskID=?";
 
-    // Insert the data into the tasks table with the user ID
-    $sql = "UPDATE mytasks SET taskName='$taskName', taskDescription='$taskDescription', endDate='$endDate', priority_stat='$priority_stat', starred='$starred', categoryID='$category', trash='0' WHERE taskID='$taskID'";
+    // Prepare the statement
+    $stmt = mysqli_prepare($conn, $sql);
 
-    if ($conn->query($sql) === TRUE) {
-      sleep(1);
-      header("Location: ../frontend/tasks_v2.php");
+    // Bind parameters to the prepared statement
+    mysqli_stmt_bind_param($stmt, "ssssssi", $taskName, $taskDescription, $endDate, $priority_stat, $starred, $category, $taskID);
+
+    // Execute the statement
+    if (mysqli_stmt_execute($stmt)) {
+        sleep(1);
+        header("Location: ../frontend/tasks_v2.php");
     } else {
-      echo "Error updating record: " . $conn->error;
+        echo "Error updating record: " . mysqli_stmt_error($stmt);
     }
 
-    // Close the database connection
+    // Close the statement and the database connection
+    mysqli_stmt_close($stmt);
     mysqli_close($conn);
 
 
@@ -53,4 +59,5 @@ if (isset($_SESSION['loggedin'])) {
 }
 
 ?>
+
 

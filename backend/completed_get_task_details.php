@@ -4,9 +4,7 @@
   $taskID = $_POST["taskID"];
   $id = $_POST["id"];
 
-
-
-  $sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND taskID=$taskID";
+  $sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus='Completed' AND taskID=$taskID";
 
   $result = mysqli_query($conn, $sql);
   $row = mysqli_fetch_assoc($result);

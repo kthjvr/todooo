@@ -3,6 +3,7 @@
   $conn = mysqli_connect("localhost", "root", "", "getitdone");
   $taskID = $_POST["taskID"];
   $id = $_POST["id"];
+  $current_date = date('Y-m-d'); // get current date
 
   $sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND taskID=$taskID";
 
@@ -10,6 +11,10 @@
   $row = mysqli_fetch_assoc($result);
 
   // echo "<p>".$row['id']."</p>";
+
+  if ($row['endDate'] < $current_date) {
+    echo "<div><img src='../images/notice.png' alt='notice' style='vertical-align: middle;'/><span class='notice'>&nbsp;This task is overdue!</span></div>";
+  }
 
   echo "<h1 class='task-title'>".$row['taskName']."</h1>
   <p class='task-id' hidden>".$row['taskID']."</p>

@@ -64,6 +64,11 @@ $_SESSION['userpassword']
             </button>
           </li>
           <li>
+            <button class="icon" id="due">
+            <i class="fas fa-stopwatch"></i>
+            </button>
+          </li>
+          <li>
             <button class="icon" id="category">
             <i class="fas fa-th-large"></i>
             </button>
@@ -192,5 +197,5 @@ $_SESSION['userpassword']
   <script>
     var username = "<?php echo $_SESSION['username']; ?>";
     var useremail = "<?php echo $_SESSION['email']; ?>";
-    var avatar = "../images/avatar/<?php echo $_SESSION['avatar']; ?>";
+    var avatar = "<?php echo $_SESSION['avatar']; ?>";
   </script>

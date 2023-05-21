@@ -20,7 +20,7 @@
         <div class="center-content">
             <div class="box-1">
             <!-- <img src="../images/icon.png" alt="todooo" class="logo2"> -->
-                <form method="post" action="../backend/register.php">
+                <form method="post" action="../backend/register.php" enctype="multipart/form-data">
                     <h2>Set up your account</h2>
 
                     <p>Username</p>
@@ -29,22 +29,9 @@
                     <input name="email" type="email" placeholder="ex.: example@gmail.com" required>
                     <p>Password</p>
                     <input name="userpassword" type="password" placeholder="Type password" required>
-                    <p>Select Avatar:</p>
-                    <div class="avatar-grid">
-                        <label>
-                            <input type="radio" name="avatar" value="female.png" required>
-                            <img src="../images/avatar/female.png" alt="Avatar 1">
-                        </label>
-                        <label>
-                            <input type="radio" name="avatar" value="female2.png" required>
-                            <img src="../images/avatar/female2.png" alt="Avatar 2">
-                        </label>
-                        <label>
-                            <input type="radio" name="avatar" value="male.png" required>
-                            <img src="../images/avatar/male.png" alt="Avatar 3">
-                        </label>
-                        <!-- Add more labels for more avatar images -->
-                    </div>
+                    <p>Upload Profile:</p>
+                    <input type="file" name="avatar" id="avatarFile" onchange="handleAvatarSelection(this)" required>
+                    <small id="avatarError" class="error-message"></small>
                     <a>
                         <button class="submit" type="submit">Sign Up</button>
                     </a>
@@ -58,3 +45,14 @@
 
     </body>
 </html>
+
+<script>
+    function handleAvatarSelection(input) {
+        const avatarError = document.getElementById('avatarError');
+        if (input.value !== '') {
+            avatarError.innerHTML = '';
+        } else {
+            avatarError.innerHTML = 'Please select an avatar file.';
+        }
+    }
+</script>
