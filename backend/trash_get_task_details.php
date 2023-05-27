@@ -64,7 +64,7 @@
           data: { taskID: taskID },
           success: function(response) {
             Swal.fire({
-            title: "Task has been moved to trash",
+            title: "Task has been restored.",
             icon: "success",
             confirmButtonText: "OK",
             confirmButtonColor: "#F999B7"

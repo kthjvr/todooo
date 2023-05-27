@@ -459,7 +459,7 @@ body {
 
 .icon {
   width: 50px;
-  height: 50px;
+  height: 40px;
   background-color: var(--sub-color);
   border-radius: 12px;
   display: flex;
@@ -1056,4 +1056,90 @@ div#details-placeholder {
 .notice{
   color: red;
   /* opacity: 0.5; */
+}
+
+
+@media screen and (max-width: 1366px) and (max-height: 625px) {
+  .table-container {
+    max-height: 700px;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+    height: 80vh;
+    width: 100%;
+    /* left: 25vh; */
+    background-color: aliceblue;
+    color: #0F044C;
+  }
+
+  .task-list {
+    width: 245px;
+    min-height: 200px;
+    background-color: #f7f7f7;
+    border: 1px solid #e0e0e0;
+    overflow-y: scroll;
+    height: 505px;
+  }
+
+  .task-list li {
+    cursor: pointer;
+    padding: 9px;
+    transition: background-color 0.2s ease-in-out;
+    overflow: hidden;
+    max-width: 350px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    /* padding: 8px; */
+    /* border-bottom: 1px solid #ccc; */
+    position: relative;
+  }
+
+  .task[data-starred="yes"]::after {
+    content: '\2605';
+    position: absolute;
+    top: -8px;
+    right: 5px;
+    font-size: 20px;
+    color: gold;
+}
+
+.container2 {
+  border: none;
+  padding: 10px;
+  position: absolute;
+  display: inline-flex;
+  margin-left: 3%;
+  margin-top: 1%;
+}
+
+.section-title {
+  background-color: var(--main-text-color);
+  color: var(--light-color);
+  width: 25%;
+  height: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.task-info-item p, h3 {
+  margin: 0;
+  color: var(--main-text-color);
+  font-size: 12px;
+}
+
+.task-info-item button {
+  color: var(--main-text-color);
+  display: list-item;
+  position: inherit;
+  background: transparent;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  font-size: 12px;
+}
+
+
 }

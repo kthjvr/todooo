@@ -1,4 +1,7 @@
-<?php include '../frontend/sidebar.php'; ?>
+<?php include '../frontend/sidebar2.php'; ?>
+
+<meta http-equiv=''>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +15,7 @@
 <script src="../javascript/script.js"></script>
 <script src="https://apis.google.com/js/api.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-jscalendar@1.4.4/source/jsCalendar.min.js" integrity="sha384-0LaRLH/U5g8eCAwewLGQRyC/O+g0kXh8P+5pWpzijxwYczD3nKETIqUyhuA8B/UB" crossorigin="anonymous"></script>
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-jscalendar@1.4.4/source/jsCalendar.min.css" integrity="sha384-44GnAqZy9yUojzFPjdcUpP822DGm1ebORKY8pe6TkHuqJ038FANyfBYBpRvw8O9w" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-jscalendar@1.4.4/source/jsCalendar.min.css" integrity="sha384-44GnAqZy9yUojzFPjdcUpP822DGm1ebORKY8pe6TkHuqJ038FANyfBYBpRvw8O9w" crossorigin="anonymous">
 
 
 
@@ -24,46 +27,59 @@ $password = "";
 $dbname = "getItDone";
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 
-// Create a new MySQLi instance
 $mysqli = new mysqli($servername, $username, $password, $dbname);
 
-// Check if connection was successful
 if ($mysqli->connect_errno) {
-    // Handle database connection error
     die("Failed to connect to the database: " . $mysqli->connect_error);
 }
 
-// Assuming you have the user ID stored in the $userID variable
 $userID = $_SESSION['id'];
 
-// Get the start and end dates of the current week in the format 'Y-m-d'
 $startDate = date('Y-m-d', strtotime('monday this week'));
 $endDate = date('Y-m-d', strtotime('sunday this week'));
-
+$current_date = date('Y-m-d');
 
 // SQL query to count the tasks due within the current week for the specified user ID
-$sql = "SELECT COUNT(*) AS taskCount FROM mytasks WHERE id = $userID AND endDate >= '$startDate' AND endDate <= '$endDate' AND currentStatus != 'Completed' AND trash = 0";
+$sql = "SELECT COUNT(DISTINCT mytasks.taskID) AS taskCount
+FROM mytasks
+LEFT JOIN assignments ON mytasks.taskID = assignments.taskID
+WHERE (mytasks.id = $userID OR assignments.assignee_id = $userID)
+  AND mytasks.endDate >= '$startDate' AND mytasks.endDate <= '$endDate'
+  AND mytasks.currentStatus != 'Completed' AND mytasks.trash = 0";
 
-// Execute the query
 $result = $mysqli->query($sql);
-
-// Fetch the task count from the query result
 $row = $result->fetch_assoc();
 $taskCount = $row['taskCount'];
 
-// Close the database connection
-// $mysqli->close();
+// SQL query to count the tasks over due for the specified user ID
+$sql1 = "SELECT COUNT(DISTINCT mytasks.taskID) AS taskCountDue
+FROM mytasks
+LEFT JOIN assignments ON mytasks.taskID = assignments.taskID
+WHERE (mytasks.id = $userID OR assignments.assignee_id = $userID)
+  AND mytasks.endDate < '$current_date'
+  AND mytasks.currentStatus != 'Completed' AND mytasks.trash = 0";
+
+$result1 = $mysqli->query($sql1);
+$row1 = $result1->fetch_assoc();
+$taskCountDue = $row1['taskCountDue'];
+
+
+
 ?>
 
+<div class="dashboard-container">
     <div class="container-fluid">
 
-            <div class="banner">
-                <h1>Hi, <?php echo $_SESSION['username']; ?></h1>
-                <div class="content">
-                    <p class="reminder">You still have <span id="taskCount">10</span> tasks due this week</p>
-                    <img src="<?php echo $_SESSION['avatar']; ?>" alt="avatar">
-                </div>
-            </div>
+      <div class="banner">
+          <h1>Hi, <?php echo $_SESSION['username']; ?></h1>
+          <div class="content">
+              <p class="reminder">You have <span id="taskCount">0</span> tasks due this week.</p>
+              <p class="reminderDue">You have <span id="taskCountDue">0</span> tasks over due!</p>
+              <!-- <p class="reminderAssigned">You have <span id="taskCountAssigned">0</span> assigned tasks due this week!</p> -->
+
+              <img src="<?php echo $_SESSION['avatar']; ?>" alt="avatar">
+          </div>
+      </div>
 
             <div class="dailyq">
                 <h3 class='title'>Daily Affirmations</h3>
@@ -81,48 +97,109 @@ $taskCount = $row['taskCount'];
 
             <div class="analytics">
 
-                <?php
-                  $id = $_SESSION['id'];
+            <?php
+              $id = $_SESSION['id'];
 
-                  // Get the total number of tasks
-                  $query = "SELECT COUNT(*) AS countTotal FROM mytasks WHERE id = $id AND trash = 0";
-                  $result = $mysqli->query($query);
-                  $row = $result->fetch_assoc();
-                  $totalTasks = $row['countTotal'];
+              // Get the total number of tasks
+              $query = "SELECT SUM(taskCount) AS countTotal
+              FROM (
+                  SELECT COUNT(*) AS taskCount
+                  FROM mytasks
+                  WHERE id = $id AND trash = 0
+                  
+                  UNION ALL
+                  
+                  SELECT COUNT(DISTINCT assignments.taskID) AS taskCount
+                  FROM assignments
+                  JOIN mytasks ON mytasks.taskID = assignments.taskID
+                  WHERE assignments.assignee_id = $id AND mytasks.trash = 0
+              ) AS counts";
+              $result = $mysqli->query($query);
+              $row = $result->fetch_assoc();
+              $totalTasks = $row['countTotal'];
 
-                  if ($totalTasks > 0) {
-                    // Get the number of completed tasks
-                    $query = "SELECT COUNT(*) AS countCompleted FROM mytasks WHERE id = $id AND trash = 0 AND currentStatus='Completed'";
-                    $bresult = $mysqli->query($query);
-                    $brow = $bresult->fetch_assoc();
-                    $completedTasks = $brow['countCompleted'];
+              if ($totalTasks > 0) {
+                // Get the number of completed tasks
+                $query = "SELECT SUM(taskCount) AS countCompleted
+                FROM (
+                    SELECT COUNT(*) AS taskCount
+                    FROM mytasks
+                    WHERE id = $id AND trash = 0 AND currentStatus = 'Completed'
+                    
+                    UNION ALL
+                    
+                    SELECT COUNT(DISTINCT assignments.taskID) AS taskCount
+                    FROM assignments
+                    JOIN mytasks ON mytasks.taskID = assignments.taskID
+                    WHERE assignments.assignee_id = $id AND mytasks.currentStatus = 'Completed' AND mytasks.trash = 0
+                ) AS counts";
+                $bresult = $mysqli->query($query);
+                $brow = $bresult->fetch_assoc();
+                $completedTasks = $brow['countCompleted'];
 
-                    // Get the number of tasks in progress
-                    $query = "SELECT COUNT(*) AS countInprogress FROM mytasks WHERE id = $id AND trash = 0 AND currentStatus='In Progress'";
-                    $bresult = $mysqli->query($query);
-                    $brow = $bresult->fetch_assoc();
-                    $inProgressTasks = $brow['countInprogress'];
+                // Get the number of tasks in progress
+                $query = "SELECT SUM(taskCount) AS countInprogress
+                FROM (
+                    SELECT COUNT(*) AS taskCount
+                    FROM mytasks
+                    WHERE id = $id AND trash = 0 AND currentStatus = 'In Progress'
+                    
+                    UNION ALL
+                    
+                    SELECT COUNT(DISTINCT assignments.taskID) AS taskCount
+                    FROM assignments
+                    JOIN mytasks ON mytasks.taskID = assignments.taskID
+                    WHERE assignments.assignee_id = $id AND mytasks.currentStatus = 'In Progress' AND mytasks.trash = 0
+                ) AS counts";
+                $bresult = $mysqli->query($query);
+                $brow = $bresult->fetch_assoc();
+                $inProgressTasks = $brow['countInprogress'];
 
-                    // Get the number of pending tasks
-                    $query = "SELECT COUNT(*) AS countPending FROM mytasks WHERE id = $id AND trash = 0 AND currentStatus='Not Started'";
-                    $bresult = $mysqli->query($query);
-                    $brow = $bresult->fetch_assoc();
-                    $notStartedTasks = $brow['countPending'];
+                // Get the number of pending tasks
+                $query = "SELECT SUM(taskCount) AS countPending
+                FROM (
+                    SELECT COUNT(*) AS taskCount
+                    FROM mytasks
+                    WHERE id = $id AND trash = 0 AND currentStatus = 'Not Started'
+                    
+                    UNION ALL
+                    
+                    SELECT COUNT(DISTINCT assignments.taskID) AS taskCount
+                    FROM assignments
+                    JOIN mytasks ON mytasks.taskID = assignments.taskID
+                    WHERE assignments.assignee_id = $id AND mytasks.currentStatus = 'Not Started' AND mytasks.trash = 0
+                ) AS counts";
+                $bresult = $mysqli->query($query);
+                $brow = $bresult->fetch_assoc();
+                $notStartedTasks = $brow['countPending'];
 
-                    // Calculate the percentages
-                    $completedPercentage = round(($completedTasks / $totalTasks) * 100, 0);
-                    $inProgressPercentage = round(($inProgressTasks / $totalTasks) * 100, 0);
-                    $notStartedPercentage = round(($notStartedTasks / $totalTasks) * 100, 0);
-                  } else {
-                    // Set default values when there are no tasks
-                    $completedTasks = 0;
-                    $inProgressTasks = 0;
-                    $notStartedTasks = 0;
-                    $completedPercentage = 0;
-                    $inProgressPercentage = 0;
-                    $notStartedPercentage = 0;
-                  }
-                ?>
+                // Get the number of assigned tasks
+                $query = "SELECT COUNT(DISTINCT mytasks.taskID) AS countAssigned
+                          FROM mytasks
+                          JOIN assignments ON mytasks.taskID = assignments.taskID
+                          WHERE assignments.assignee_id = $id AND mytasks.currentStatus != 'Completed' AND mytasks.trash = 0";
+                $bresult = $mysqli->query($query);
+                $brow = $bresult->fetch_assoc();
+                $assignedTasks = $brow['countAssigned'];
+
+                // Calculate the percentages
+                $completedPercentage = round(($completedTasks / $totalTasks) * 100, 0);
+                $inProgressPercentage = round(($inProgressTasks / $totalTasks) * 100, 0);
+                $notStartedPercentage = round(($notStartedTasks / $totalTasks) * 100, 0);
+                $assignedPercentage = round(($assignedTasks / $totalTasks) * 100, 0);
+              } else {
+                // Set default values when there are no tasks
+                $completedTasks = 0;
+                $inProgressTasks = 0;
+                $notStartedTasks = 0;
+                $assignedTasks = 0;
+                $completedPercentage = 0;
+                $inProgressPercentage = 0;
+                $notStartedPercentage = 0;
+                $assignedPercentage = 0;
+              }
+            ?>
+
 
                 <div class="progress-container">
                   <div role="progressbar inprogress" aria-valuenow="<?= $inProgressPercentage ?>" aria-valuemin="0" aria-valuemax="<?= $totalTasks ?>" style="--value:<?= $inProgressPercentage ?>"></div>
@@ -156,17 +233,53 @@ $taskCount = $row['taskCount'];
                   $endOfWeek = date('Y-m-d', strtotime('sunday this week'));
                 
                   // Query to get the number of tasks added for the week
-                  $queryAdded = "SELECT COUNT(*) AS addedTasks FROM mytasks WHERE DATE(createdAt) BETWEEN '$startOfWeek' AND '$endOfWeek' AND id=$id";
+                  $queryAdded = "SELECT SUM(taskCount) AS addedTasks
+                  FROM (
+                      SELECT COUNT(*) AS taskCount
+                      FROM mytasks
+                      WHERE id = $id AND DATE(createdAt) BETWEEN '$startOfWeek' AND '$endOfWeek' AND trash = '0' AND currentStatus != 'Completed'
+                      
+                      UNION ALL
+                      
+                      SELECT COUNT(DISTINCT assignments.taskID) AS taskCount
+                      FROM assignments
+                      JOIN mytasks ON mytasks.taskID = assignments.taskID
+                      WHERE assignments.assignee_id = $id AND DATE(mytasks.createdAt) BETWEEN '$startOfWeek' AND '$endOfWeek' AND mytasks.trash = '0' AND mytasks.currentStatus != 'Completed'
+                  ) AS counts";
                   $resultAdded = mysqli_query($conn, $queryAdded);
                   $addedTasks = mysqli_fetch_assoc($resultAdded)['addedTasks'];
                 
                   // Query to get the number of completed tasks for the week
-                  $queryCompleted = "SELECT COUNT(*) AS completedTasks FROM mytasks WHERE DATE(createdAt) BETWEEN '$startOfWeek' AND '$endOfWeek' AND currentStatus = 'Completed'  AND id=$id";
+                  $queryCompleted = "SELECT SUM(taskCount) AS completedTasks
+                  FROM (
+                      SELECT COUNT(*) AS taskCount
+                      FROM mytasks
+                      WHERE id = $id  AND currentStatus = 'Completed' AND DATE(createdAt) BETWEEN '$startOfWeek' AND '$endOfWeek'
+                      
+                      UNION ALL
+                      
+                      SELECT COUNT(DISTINCT assignments.taskID) AS taskCount
+                      FROM assignments
+                      JOIN mytasks ON mytasks.taskID = assignments.taskID
+                      WHERE assignments.assignee_id = $id AND mytasks.currentStatus = 'Completed' AND DATE(mytasks.createdAt) BETWEEN '$startOfWeek' AND '$endOfWeek'
+                  ) AS counts";
                   $resultCompleted = mysqli_query($conn, $queryCompleted);
                   $completedTasks = mysqli_fetch_assoc($resultCompleted)['completedTasks'];
                 
                   // Query to get the number of discarded tasks for the week
-                  $queryDiscarded = "SELECT COUNT(*) AS discardedTasks FROM mytasks WHERE DATE(createdAt) BETWEEN '$startOfWeek' AND '$endOfWeek' AND currentStatus = 'Discarded'  AND id=$id";
+                  $queryDiscarded = "SELECT SUM(taskCount) AS discardedTasks
+                  FROM (
+                      SELECT COUNT(*) AS taskCount
+                      FROM mytasks
+                      WHERE id = $id AND currentStatus = 'Discarded' AND DATE(createdAt) BETWEEN '$startOfWeek' AND '$endOfWeek'
+                      
+                      UNION ALL
+                      
+                      SELECT COUNT(DISTINCT assignments.taskID) AS taskCount
+                      FROM assignments
+                      JOIN mytasks ON mytasks.taskID = assignments.taskID
+                      WHERE assignments.assignee_id = $id AND mytasks.currentStatus = 'Discarded' AND DATE(mytasks.createdAt) BETWEEN '$startOfWeek' AND '$endOfWeek' 
+                  ) AS counts";
                   $resultDiscarded = mysqli_query($conn, $queryDiscarded);
                   $discardedTasks = mysqli_fetch_assoc($resultDiscarded)['discardedTasks'];
                 ?>
@@ -192,14 +305,24 @@ $taskCount = $row['taskCount'];
             </div>
         
             <div class="duetoday">
-              <p class='title'>Task needed to be done today</p>
+              <p class='title'>Tasks due today</p>
               <a href="tasks-today.php">View All ></a>
               <div class="duetoday-container">
                 <ul id="task-list">
                   <?php
                     $id = $_SESSION['id'];
                     $current_date = date('Y-m-d');
-                    $queryToday = "SELECT taskName FROM mytasks WHERE id = $id AND endDate='".$current_date."' AND trash='0' AND currentStatus != 'Completed'";
+                    // echo $current_date;
+                    $queryToday = "SELECT mytasks.taskName
+                    FROM mytasks
+                    WHERE (mytasks.id = $id AND mytasks.trash = '0' AND mytasks.currentStatus != 'Completed' AND mytasks.endDate='$current_date') 
+                    
+                    UNION
+    
+                    SELECT mytasks.taskName
+                    FROM mytasks
+                    JOIN assignments ON assignments.taskID = mytasks.taskID
+                    WHERE (assignments.assignee_id = $id AND mytasks.trash = '0' AND mytasks.currentStatus != 'Completed' AND mytasks.endDate='$current_date')";
                     $resultToday = mysqli_query($conn, $queryToday);
                     
                     // Display the information in the HTML table
@@ -225,7 +348,16 @@ $taskCount = $row['taskCount'];
                   <?php
                     $id = $_SESSION['id'];
                     $current_date = date('Y-m-d');
-                    $queryToday = "SELECT taskName FROM mytasks WHERE id = $id AND endDate < '$current_date' AND trash='0' AND currentStatus != 'Completed'";
+                    $queryToday = "SELECT mytasks.taskName
+                    FROM mytasks
+                    WHERE (mytasks.id = $id AND mytasks.trash = '0' AND mytasks.currentStatus != 'Completed' AND mytasks.endDate < '$current_date')
+    
+                    UNION
+    
+                    SELECT mytasks.taskName
+                    FROM mytasks
+                    JOIN assignments ON assignments.taskID = mytasks.taskID
+                    WHERE (assignments.assignee_id = $id AND mytasks.trash = '0' AND mytasks.currentStatus != 'Completed' AND mytasks.endDate < '$current_date')";
                     $resultToday = mysqli_query($conn, $queryToday);
                     
                     // Display the information in the HTML table
@@ -248,7 +380,16 @@ $taskCount = $row['taskCount'];
                 <ul id="task-list">
                   <?php
                     $id = $_SESSION['id'];
-                    $queryStar = "SELECT taskName FROM mytasks WHERE id = $id AND starred='yes' AND trash='0' AND currentStatus != 'Completed'";
+                    $queryStar = "SELECT mytasks.taskName
+                    FROM mytasks
+                    WHERE (mytasks.id = $id AND mytasks.trash = '0' AND mytasks.currentStatus != 'Completed' AND mytasks.starred='yes')
+                    
+                    UNION
+                    
+                    SELECT mytasks.taskName
+                    FROM mytasks
+                    JOIN assignments ON assignments.taskID = mytasks.taskID
+                    WHERE (assignments.assignee_id = $id AND mytasks.trash = '0' AND mytasks.currentStatus != 'Completed' AND mytasks.starred='yes')";
                     $resultStar = mysqli_query($conn, $queryStar);
                     
                     // Display the information in the HTML table
@@ -276,8 +417,7 @@ $taskCount = $row['taskCount'];
                 <textarea id="notes-box" placeholder="Write your notes here"><?php echo $initialNotes?></textarea>
               </div>
             </div>
-
-
+    </div>
     </div>
 
 
@@ -289,21 +429,18 @@ $taskCount = $row['taskCount'];
   // Get the notes box element
   const notesBox = document.getElementById('notes-box');
 
-  // Set the initial content of the notes box from the database or any other source
-  // For example:
-  // notesBox.value = 'Initial notes content';
 
   // Save the notes after a certain delay
   let timeoutId;
   notesBox.addEventListener('input', function() {
     clearTimeout(timeoutId);
-    timeoutId = setTimeout(saveNotes, 3000);
+    timeoutId = setTimeout(saveNotes, 1000);
   });
 
   // Function to save the notes
   function saveNotes() {
     const noteContent = notesBox.value;
-    const userID = '5';
+    const userID = <?php echo $_SESSION['id']; ?>;
     console.log(userID)
 
     // Send an AJAX request to the server to save the notes
@@ -325,25 +462,11 @@ $taskCount = $row['taskCount'];
     const params = 'noteContent=' + encodeURIComponent(noteContent) + '&id=' + encodeURIComponent(userID);
     xhr.send(params);
   }
-
-  // Function to show the auto-saved message
-  function showAutoSavedMessage() {
-    const message = document.createElement('span');
-    message.classList.add('autosave-message');
-    message.textContent = 'Auto-saved ✓';
-
-    const existingMessage = document.querySelector('.autosave-message');
-    if (existingMessage) {
-      existingMessage.parentNode.removeChild(existingMessage);
-    }
-
-    notesBox.parentNode.appendChild(message);
-  }
 </script>
 
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", function() {
     var timeContainer = document.querySelector(".time");
     var dateContainer = document.querySelector(".date");
 
@@ -388,6 +511,8 @@ document.addEventListener("DOMContentLoaded", function() {
 <script>
   // Update the task count in the HTML
   document.getElementById("taskCount").textContent = "<?php echo $taskCount; ?>";
+  document.getElementById("taskCountDue").textContent = "<?php echo $taskCountDue; ?>";
+
 </script>
 
 <script>

@@ -14,45 +14,66 @@
     <body>
 
         <nav>
-            <img src="../images/logo.png" alt="Todooo">
+            <a href="../index.html"><img src="../images/logo.png" alt="Todooo"></a>
         </nav>
 
         <div class="center-content">
             <div class="box-1">
-            <!-- <img src="../images/icon.png" alt="todooo" class="logo2"> -->
                 <form method="post" action="../backend/register.php" enctype="multipart/form-data">
-                    <h2>Set up your account</h2>
-
-                    <p>Username</p>
-                    <input name="username" type="text" placeholder="ex.: anonymous27" required>
-                    <p>Email Address</p>
-                    <input name="email" type="email" placeholder="ex.: example@gmail.com" required>
-                    <p>Password</p>
-                    <input name="userpassword" type="password" placeholder="Type password" required>
-                    <p>Upload Profile:</p>
-                    <input type="file" name="avatar" id="avatarFile" onchange="handleAvatarSelection(this)" required>
-                    <small id="avatarError" class="error-message"></small>
-                    <a>
-                        <button class="submit" type="submit">Sign Up</button>
-                    </a>
-
-                    <div class="question">
-                        <p>Registered? Click <a href="sign-in.html" style="text-decoration:none; font-weight: bolder; color:#0074D9;">here</a> to log in!</p>
-                    </div>
+                  <h2>Set up your account</h2>
+              
+                  <p>Username</p>
+                  <input name="username" type="text" placeholder="ex.: anonymous27" required>
+                  <p>Email Address</p>
+                  <input name="email" type="email" placeholder="ex.: example@gmail.com" required>
+                  <p>Password</p>
+                  <input name="userpassword" type="password" placeholder="Type password" required>
+                  <p>Upload Profile:</p>
+                  <label for="avatarFile">
+                    <span id="avatarFileDisplay">
+                      <span class="avatar-preview-label">No file selected</span>
+                      <img id="avatarPreview" src="../images/avatar/portrait.png" alt="Avatar Preview" />
+                    </span>
+                    <img id="avatarPreview1" src="../images/avatar/portrait.png" alt="Avatar Preview" />
+                  </label>
+                  <input type="file" name="avatar" id="avatarFile" onchange="handleAvatarSelection(this)" required>
+                  <a>
+                    <button class="submit" type="submit">Sign Up</button>
+                  </a>
+              
+                  <div class="question">
+                    <p>Registered? Click <a href="sign-in.html" style="text-decoration:none; font-weight: bolder; color:#0074D9;">here</a> to log in!</p>
+                  </div>
                 </form>
-            </div>
+              </div>
+              
+                      
         </div>
 
     </body>
 </html>
 
 <script>
-    function handleAvatarSelection(input) {
-        const avatarError = document.getElementById('avatarError');
-        if (input.value !== '') {
-            avatarError.innerHTML = '';
-        } else {
-            avatarError.innerHTML = 'Please select an avatar file.';
-        }
-    }
+function handleAvatarSelection(input) {
+  var file = input.files[0];
+  var preview = document.getElementById("avatarPreview");
+  var preview1 = document.getElementById("avatarPreview1");
+  var label = document.querySelector("#avatarFileDisplay .avatar-preview-label");
+
+  if (file) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      preview.src = e.target.result;
+      preview.style.display = "block";
+      preview1.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+    label.textContent = file.name;
+  } else {
+    preview.src = "../images/avatar/portrait.png";
+    preview.style.display = "none";
+    label.textContent = "No file selected";
+  }
+}
+
 </script>

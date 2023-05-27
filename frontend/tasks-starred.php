@@ -60,9 +60,25 @@ mysqli_close($conn);
                   
                 $id = $_SESSION['id'];
                   
-                $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND mytasks.starred='yes'"; //retrieve info from db
-                $info_result = mysqli_query($conn, $info_sql);
+                // $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id 
+                // AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND mytasks.starred='yes'"; //retrieve info from db
                 
+
+                $info_sql = "SELECT mytasks.*, categories.category
+                FROM mytasks
+                JOIN categories ON categories.categoryID = mytasks.categoryID
+                WHERE (mytasks.id = $id AND mytasks.trash = '0' AND mytasks.currentStatus != 'Completed' AND mytasks.starred='yes')
+                
+                UNION
+                
+                SELECT mytasks.*, categories.category
+                FROM mytasks
+                JOIN assignments ON assignments.taskID = mytasks.taskID
+                JOIN categories ON categories.categoryID = mytasks.categoryID
+                WHERE (assignments.assignee_id = $id AND mytasks.trash = '0' AND mytasks.currentStatus != 'Completed' AND mytasks.starred='yes')";
+                
+                $info_result = mysqli_query($conn, $info_sql);
+
                 // Display the information in the HTML table
               if (mysqli_num_rows($info_result) > 0) {
                 while($row = mysqli_fetch_assoc($info_result)) {

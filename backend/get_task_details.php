@@ -3,17 +3,11 @@
   $conn = mysqli_connect("localhost", "root", "", "getitdone");
   $taskID = $_POST["taskID"];
   $id = $_POST["id"];
-  $current_date = date('Y-m-d'); // get current date
+  $current_date = date('Y-m-d'); 
 
   $sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND taskID=$taskID";
-
   $result = mysqli_query($conn, $sql);
   $row = mysqli_fetch_assoc($result);
-
-  // echo "<p>".$row['id']."</p>";
-
-  // echo "$current_date";
-  // echo "".$row['endDate']."";
 
   if ($row['endDate'] < $current_date) {
     echo "<div><img src='../images/notice.png' alt='notice' style='vertical-align: middle;'/><span class='notice'>&nbsp;This task is overdue!</span></div>";
@@ -34,12 +28,71 @@
     &nbsp;&nbsp;&nbsp;
     <img src='../images/category.png' alt='cat' style='vertical-align: middle;'/>
     ".$row['category']."
-    </p>
-  </div>
-  ";
-  echo "<hr  class='divider2'>";
-  echo "<p class='task-description'>".$row['taskDescription']."</p>";
-  echo "          </div>
+    &nbsp;&nbsp;&nbsp;";
+
+  $assignedBy = ""; // Variable to store the assigned by information
+  
+
+  // Check if the task is assigned to the current user
+  $assignments_sql = "SELECT assignee_id, assignedBy FROM assignments WHERE taskID = $taskID";
+  $assignments_result = mysqli_query($conn, $assignments_sql);
+  if (mysqli_num_rows($assignments_result) > 0) {
+    $row = mysqli_fetch_assoc($assignments_result);
+    $assignee_id = $row['assignee_id'];
+    $assignedBy = $row['assignedBy'];
+
+    
+    // echo $assignee_id; //18
+    // echo $assignedBy; //5
+
+    session_start();
+    $current_id = $_SESSION['id'];
+    // echo $current_id; //5
+
+    if ($assignee_id == $current_id) {
+      $assignedToCurrentUser = false;
+    } else{
+      $assignedToCurrentUser = true;
+    }
+  
+
+  if (!$assignedToCurrentUser) {
+    
+    // If assigned to the current user, display "Assigned By" information
+    $assignments_sql = "SELECT username FROM users JOIN assignments ON users.id = assignments.assignedBy WHERE assignments.taskID = $taskID";
+    $assignments_result = mysqli_query($conn, $assignments_sql);
+    if (mysqli_num_rows($assignments_result) > 0) {
+      $row = mysqli_fetch_assoc($assignments_result);
+      $assignedBy = "Assigned By: " . $row['username'];
+    }
+  } else {
+    // If assigned by the current user, display "Assigned To" information
+    $assignments_sql = "SELECT username FROM users JOIN assignments ON users.id = assignments.assignee_id WHERE assignments.taskID = $taskID";
+    $assignments_result = mysqli_query($conn, $assignments_sql);
+    if (mysqli_num_rows($assignments_result) > 0) {
+      $row = mysqli_fetch_assoc($assignments_result);
+      $assignedBy = "Assigned To: " . $row['username'];
+    }
+  }
+}
+
+  if (!empty($assignedBy)) {
+    echo "<img src='../images/assigned.png' alt='cat' style='vertical-align: middle;'/> " . $assignedBy;
+  }
+
+  echo "</p>
+  </div>";
+
+
+
+$sql2 = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND taskID=$taskID";
+$result2 = mysqli_query($conn, $sql2);
+$row2 = mysqli_fetch_assoc($result2);
+
+echo "<hr class='divider2'>";
+echo "<p class='task-description'>".$row2['taskDescription']."</p>";
+echo "</div>
+
   
   <div class='task-info'>
     <div class='task-info-item'>
@@ -47,14 +100,14 @@
       <hr class='divider'>";
 
       
-      if ($row['currentStatus'] == 'Not Started') {
+      if ($row2['currentStatus'] == 'Not Started') {
         echo "<button class='setInprogress'><img src='../images/inprog.png' style='vertical-align: middle;'>&nbsp;Set to in-progress</button>";
       }
       
       echo "
       <button class='setComplete'><img src='../images/complete.png' style='vertical-align: middle;'>&nbsp;Complete</button>
       <button class='moveToTrash'><img src='../images/trash.png' style='vertical-align: middle;'>&nbsp;Move to trash</button>
-     <button id='star-button' class='starred ".$row['starred']."'>
+     <button id='star-button' class='starred ".$row2['starred']."'>
      <i id='star-icon' class='fas fa-star' style='vertical-align: middle;'></i>&nbsp;
      <span id='star-text' style='color: #141E61;'>Star</span>
      </button>

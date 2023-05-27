@@ -165,8 +165,8 @@ div.container-side a{
 }
 .profile-bg{
   background-color: var(--light-color);
-  width: 70%;
-  height: 70%;
+  width: 45%;
+  height: 40%;
 }
 .acc{
   display: flex;
@@ -328,6 +328,7 @@ div.container-side a{
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.5);
+    color: var(--main-text-color);
   }
 
   .upload-dialog-content {
@@ -336,6 +337,22 @@ div.container-side a{
     padding: 20px;
     border: 1px solid #888;
     width: 300px;
+  }
+
+  .upload-dialog-content h2, input, button{
+    color: var(--main-text-color);
+  }
+
+  .upload-dialog-content input{
+    border: 2px solid #007bff;
+    width: 85%;
+    margin: 20px;
+  }
+
+  .upload-dialog-content button{
+    padding: 5px;
+    margin: 0px 100px;
+    margin-top: 10px;
   }
 
   .upload-dialog-close {
@@ -351,4 +368,17 @@ div.container-side a{
     color: #000;
     text-decoration: none;
     cursor: pointer;
+  }
+
+  .blue-border {
+    border: 2px solid #007bff;
+    width: 85%;
+}
+
+  @media screen and (max-width: 1366px) and (max-height: 625px) {
+    .profile-bg {
+      background-color: var(--light-color);
+      width: 53%;
+      height: 45%;
+  }
   }

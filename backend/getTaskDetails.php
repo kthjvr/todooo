@@ -53,6 +53,8 @@
      <span id='star-text' style='color: #141E61;'>Star</span>
      </button>
       <button class='edit'><img src='../images/edit-task.png' style='vertical-align: middle;'>&nbsp;Edit Task</button>
+
+      <button class='assign'><img src='../images/assign-user.png' style='vertical-align: middle;'>&nbsp;Assign Task</button>
       
 
       
@@ -62,16 +64,50 @@
 
 ?>
 
+<script>
+  $('.assign').on('click', function() {
+  // Get the task ID from the row
+  var taskID = $(this).closest('div#task-details-container').find('.task-id').text();
+  console.log(taskID);
+
+  // Show the confirmation dialog box
+  Swal.fire({
+    title: "Assign this task?",
+    text: "Are you sure you want to assign this task to someone?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    cancelButtonText: "No",
+    confirmButtonColor: "#F999B7",
+    reverseButtons: true
+  }).then((result) => {
+    // If the user confirms the action, delete the data
+    if (result.isConfirmed) {
+      // Send an AJAX request to delete the task
+      $.ajax({
+        url: '../view/assign.php',
+        method: 'POST',
+        data: { taskID: taskID },
+        success: function(response) {
+        // Display the task details in the pop-up window
+        $('#task-details').html(response);
+        $('#popup-taskcontent').show();
+    }
+      });
+    }
+  });
+});
+</script>
 
 <script>
   var starButton = document.getElementById('star-button');
-var starText = document.getElementById('star-text');
+  var starText = document.getElementById('star-text');
 
-if (starButton.classList.contains('yes')) {
-  starText.textContent = 'Unstar';
-} else {
-  starText.textContent = 'Star';
-}
+  if (starButton.classList.contains('yes')) {
+    starText.textContent = 'Unstar';
+  } else {
+    starText.textContent = 'Star';
+  }
 </script>
 
 <script>
@@ -106,7 +142,7 @@ if (starButton.classList.contains('yes')) {
       });
     }
   });
-});
+  });
 </script>
 
 <!-- THIS IS FOR MOVING TASK TO TRASH -->
