@@ -22,26 +22,3 @@
   echo "</ul>";
   
 ?>
-
-<style>
-
-.task-list li[data-priority="extreme"]::before {
-  background-color: red;
-}
-
-.task-list li[data-priority="high"]::before {
-  background-color: orange;
-}
-
-.task-list li[data-priority="medium"]::before {
-  background-color: yellow;
-}
-
-.task-list li[data-priority="low"]::before {
-  background-color: blue;
-}
-
-
-
-
-</style>

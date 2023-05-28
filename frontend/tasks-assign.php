@@ -66,13 +66,6 @@ mysqli_close($conn);
 
                 $info_sql = "SELECT mytasks.*, categories.category
                 FROM mytasks
-                JOIN categories ON categories.categoryID = mytasks.categoryID
-                WHERE (mytasks.id = $id AND mytasks.trash = '0' AND mytasks.currentStatus != 'Completed')
-                
-                UNION
-                
-                SELECT mytasks.*, categories.category
-                FROM mytasks
                 JOIN assignments ON assignments.taskID = mytasks.taskID
                 JOIN categories ON categories.categoryID = mytasks.categoryID
                 WHERE (assignments.assignee_id = $id AND mytasks.trash = '0' AND mytasks.currentStatus != 'Completed')";
@@ -210,7 +203,6 @@ mysqli_close($conn);
 
 <!-- THIS SECTION IS FOR JAVASCRIPT -->
 
-<!-- SEARCH TASK -->
 <script>
   function searchTasks() {
     var input, filter, ul, li, a, i, txtValue;
@@ -241,7 +233,7 @@ mysqli_close($conn);
 
 </script>
 
-<!-- SORT LIST BY STAR -->
+
 <script>
  function sortListByStar() {
     let taskList = document.querySelector('#task-list');
@@ -275,7 +267,6 @@ mysqli_close($conn);
 
 </script>
 
-<!-- TO SORT LIST -->
 <script>
   function sortList() {
 			let taskList = document.querySelector('#task-list');
@@ -319,7 +310,6 @@ mysqli_close($conn);
 
 </script>
 
-<!-- THIS IS TO LOAD TASK DETAILS -->
 <script>
   $(document).ready(function() {
     // Load task details for the first task on page load

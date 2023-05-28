@@ -15,20 +15,16 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <?php
-// Connect to the database
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "getItDone";
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 
-// Check connection
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-// Close the database connection
-// mysqli_close($conn);
 ?>
 
 <div class="section-title">
@@ -52,20 +48,20 @@ if (!$conn) {
                     
                 $id = $_SESSION['id'];
 
-                // SQL query to retrieve categories from database table
                 $info_sql = "SELECT * FROM categories WHERE trash='0' AND id = '$id'";   
                 $info_result = mysqli_query($conn, $info_sql);
                 
                 if (mysqli_num_rows($info_result) > 0) { // Display the information in the HTML table
                     while ($row = mysqli_fetch_assoc($info_result)) {
-                      echo "<li class='task'style='color: black' id='".$row['categoryID']."' uid='".$row['id']."'>".$row['category']."";
+                      echo "<li class='task category-folder'data-category='yes' style='color: black' id='".$row['categoryID']."' uid='".$row['id']."'>".$row['category']."";
                       echo "<p class='description'>".$row["categoryDetails"]."</p>
+                      <button class='trash view-button-delete' id='".$row['categoryID']."'><img src='../images/trash2.png'></button>
                       </li>";
                       echo '<input class="catID" type="hidden" value="'.$row["categoryID"].'">';
                 }} else {
                     echo "<option>No results</option>";
                   }
-                  // Close the database connection again
+
                   mysqli_close($conn);
               ?>
             </ul>
@@ -78,9 +74,10 @@ if (!$conn) {
         </div>
 
         <div class="task-details">
-        <div id="task-details-container">
+          <div id="task-details-container">
               <p style='color: black'>Select a task to view its details.</p>
           </div>
+                </div>
         </div>
 
     </div>
@@ -239,10 +236,10 @@ if (!$conn) {
 <script>
   const deleteButtons = document.querySelectorAll('.view-button-delete');
   deleteButtons.forEach(button => {
-    button.addEventListener('click', (event) => {
-      const subcontainer = event.target.closest('.category-subcontainer');
-      const catIDInput = subcontainer.querySelector('.catID');
-      const catID = catIDInput.value;
+    $(document).on("click", ".category-list li .view-button-delete", function() {
+    // button.addEventListener('click', (event) => {
+      var catID = $(this).attr("id");
+      // const catID = catIDInput.value;
       console.log(catID); // or do whatever you want with the retrieved category ID
 
   // Show the confirmation dialog box
@@ -349,9 +346,9 @@ if (!$conn) {
   }
 
 
-var popup2 = document.getElementById("popup-taskcontent"); // Get the pop-up and all buttons that open it
-var close2 = document.getElementsByClassName("close-button-1")[0]; // Get the close button and add a click event listener
-close2.addEventListener("click", function() {
-  popup2.style.display = "none";
-});
+  var popup2 = document.getElementById("popup-taskcontent"); // Get the pop-up and all buttons that open it
+  var close2 = document.getElementsByClassName("close-button1")[0]; // Get the close button and add a click event listener
+  close2.addEventListener("click", function() {
+    popup2.style.display = "none";
+  });
 </script>

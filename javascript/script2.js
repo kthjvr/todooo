@@ -20,91 +20,56 @@ const category = document.querySelector("#category");
 const trash = document.querySelector("#trash");
 const assign = document.querySelector("#assign");
 
-
-let previousToggled = null;
-let currentToggled = null;
-
 search.addEventListener("click", (e) => {
-  toggleMenu(search);
   window.location.href = "../frontend/tasks_v2.php";
 });
 
 dashboard.addEventListener("click", (e) => {
-  toggleMenu(dashboard);
   window.location.href = "../frontend/dashboard.php";
 });
 
 today.addEventListener("click", (e) => {
-  toggleMenu(today);
   window.location.href = "../frontend/tasks-today.php";
 });
 
 important.addEventListener("click", (e) => {
-  toggleMenu(important);
   window.location.href = "../frontend/tasks-starred.php";
 });
 
 due.addEventListener("click", (e) => {
-  toggleMenu(due);
   window.location.href = "../frontend/task-due.php";
 });
 
 booklog.addEventListener("click", (e) => {
-  toggleMenu(booklog);
   window.location.href = "../frontend/tasks-completed.php";
 });
 
 category.addEventListener("click", (e) => {
-  toggleMenu(category);
   window.location.href = "../frontend/category.php";
 });
 
 trash.addEventListener("click", (e) => {
-  toggleMenu(trash);
   window.location.href = "../frontend/tasks-trash.php";
 });
 
 assign.addEventListener("click", (e) => {
-  toggleMenu(assign);
   window.location.href = "../frontend/tasks-assign.php";
 });
 
 add.addEventListener("click", (e) => {
-  toggleMenu(add);
   window.location.href = "../frontend/addTask.php";
 });
 
 icon_logout.addEventListener("click", (e) => {
-  window.location.href='../index.html';
+  window.location.href = '../index.html';
 });
 
-const toggleMenu = (button) => {
-  if (previousToggled && button !== menu) {
-    untoggleMenu(previousToggled);
-  }
+// Open the menu by default
+openMenu();
 
-  button.classList.add("toggled");
-  button.style.backgroundColor = "#141E61";
-
-  if (button !== menu) {
-    previousToggled = button;
-  }
-};
-
-const untoggleMenu = (button) => {
-  button.classList.remove("toggled");
-  button.style.backgroundColor = "#141E61";
-};
-
-menu.addEventListener("click", (e) => {
-  sidebar.classList.contains("active") ? closeMenu() : openMenu();
-});
-
-const openMenu = () => {
+function openMenu() {
   sidebar.classList.add("active");
   sidebar.style.width = "250px";
-
-  toggleMenu(menu);
 
   let menu_logo = document.createElement("img");
   menu_logo.id = "menu-logo";
@@ -201,81 +166,17 @@ const openMenu = () => {
 
   logout_container.insertBefore(user_container, logout_container.childNodes[0]);
 
-  // let account_container = document.createElement("a");
-  // account_container.id = "open-account";
-  // account_container.className = "open-account";
-  // logout_container.insertBefore(account_container, logout_container.childNodes[0]);
-
   let logout_photo = document.createElement("img");
   logout_photo.id = "logout-photo";
   logout_photo.src = avatar;
   logout_photo.className = "logout-photo";
   logout_photo.style.cursor = "pointer";
   logout_container.style.paddingLeft = "15px";
-  // account_container.appendChild(logout_photo);
   logout_container.insertBefore(logout_photo, logout_container.childNodes[0]);
 
   logout_photo.addEventListener("click", (e) => {
     window.location.href = "../frontend/account2.php";
   });
 
-  main.style.width = "calc(100% - 250px)";
-};
-
-const closeMenu = () => {
-  menu_container.removeChild(document.getElementById("menu-logo"));
-  menu_container.style.paddingLeft = "0px";
-
-  untoggleMenu(menu);
-
-  search.removeChild(document.getElementById("p-search"));
-  search.style.width = "50px";
-  search.style.justifyContent = "center";
-
-  dashboard.removeChild(document.getElementById("p-dashboard"));
-  dashboard.style.width = "50px";
-  dashboard.style.justifyContent = "center";
-
-  today.removeChild(document.getElementById("p-today"));
-  today.style.width = "50px";
-  today.style.justifyContent = "center";
-
-  important.removeChild(document.getElementById("p-important"));
-  important.style.width = "50px";
-  important.style.justifyContent = "center";
-
-  due.removeChild(document.getElementById("p-due"));
-  due.style.width = "50px";
-  due.style.justifyContent = "center";
-
-  booklog.removeChild(document.getElementById("p-booklog"));
-  booklog.style.width = "50px";
-  booklog.style.justifyContent = "center";
-
-  category.removeChild(document.getElementById("p-category"));
-  category.style.width = "50px";
-  category.style.justifyContent = "center";
-
-  trash.removeChild(document.getElementById("p-trash"));
-  trash.style.width = "50px";
-  trash.style.justifyContent = "center";
-
-  assign.removeChild(document.getElementById("p-assign"));
-  assign.style.width = "50px";
-  assign.style.justifyContent = "center";
-
-  add.removeChild(document.getElementById("p-add"));
-  add.style.width = "50px";
-  add.style.justifyContent = "center";
-
-  logout_container.removeChild(document.getElementById("logout-photo"));
-  logout_container.removeChild(document.getElementById("user-container"));
-  logout_container.style.paddingLeft = "0px";
-
-  icon_logout.style.width = "100%";
-
-  sidebar.classList.remove("active");
-  sidebar.style.width = "78px";
-
-  main.style.width = "calc(100% - 78px)";
-};
+  main.style.width = "calc(100% - 80px)";
+}

@@ -61,7 +61,22 @@ mysqli_close($conn);
                   
                 $id = $_SESSION['id'];
                   
-                $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus='Completed'"; //retrieve info from db
+                // $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID 
+                // AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus='Completed'"; //retrieve info from db
+
+                $info_sql = "SELECT mytasks.*, categories.category
+                FROM mytasks
+                JOIN categories ON categories.categoryID = mytasks.categoryID
+                WHERE (mytasks.id = $id AND mytasks.trash = '0' AND mytasks.currentStatus = 'Completed')
+                
+                UNION
+                
+                SELECT mytasks.*, categories.category
+                FROM mytasks
+                JOIN assignments ON assignments.taskID = mytasks.taskID
+                JOIN categories ON categories.categoryID = mytasks.categoryID
+                WHERE (assignments.assignee_id = $id AND mytasks.trash = '0' AND mytasks.currentStatus = 'Completed')";
+                
                 $info_result = mysqli_query($conn, $info_sql);
                 
                 // Display the information in the HTML table
@@ -85,67 +100,6 @@ mysqli_close($conn);
 
         </div>
       </div>
-
-      <!-- <table id="myTable">
-        <thead>
-          <tr>
-          <th>Category</th>
-          <th>Task</th>
-          <th>End Date</th>
-          <th>Priority</th>
-          <th>Status</th>
-          <th width=200px>Menu</th>
-          </tr>
-        </thead>
-
-        <tbody id="table-body">
-          <?php 
-            $current_date = date('Y-m-d'); // get current date
-            $conn = mysqli_connect($servername, $username, $password, $dbname);  // Connect to the database again
-            if (!$conn) { die("Connection failed: " . mysqli_connect_error()); } // Check connection again
-              
-            $id = $_SESSION['id'];
-              
-            $info_sql = "SELECT * FROM mytasks JOIN categories WHERE categories.categoryID=mytasks.categoryID AND categories.id=$id AND mytasks.id=$id AND mytasks.trash='0' AND mytasks.currentStatus!='Completed' AND mytasks.endDate='".$current_date."'"; //retrieve info from db
-            $info_result = mysqli_query($conn, $info_sql);
-            
-            if (mysqli_num_rows($info_result) > 0) { // Display the information in the table
-                while ($row = mysqli_fetch_assoc($info_result)) {
-                    echo "<tr>";
-                      echo "<td class='task-id' hidden>".$row["taskID"]."</td>";
-                      $category_sql = "SELECT * FROM categories JOIN mytasks ON categories.categoryID = mytasks.category;";
-                      echo "<td class='category'>".$row["category"]."</td>";
-                      echo "<td>
-                      <h3>".$row["taskName"]."</h3>
-                      <p class='description'>".$row["taskDescription"]."</p>
-                    </td>";
-                      echo "<td>".$row["endDate"]."</td>";
-                      echo "<td class='flag'><i class='fas fa-flag' id='flag-priority' data-value='".$row["priority_stat"]."'></i></td>";
-                      echo "<td>".$row["currentStatus"]."</td>";
-                      echo "<td>
-                            <a class='open-menu'><i class='fas fa-info-circle'></i></a>
-                            <div class='dropdown'>
-                            <a class='dropbtn' style='margin-left: 5vh'><i class='fas fa-ellipsis-h'></i></a>
-                            <div class='dropdown-content'>
-                            <a class='setInprogress'>Set to in-progress</a>
-                            <a class='setComplete'>Complete</a>
-                            <a class='moveToTrash'>Move to trash</a>
-                            <a class='setStar'>Star</a>
-                            </div>
-                          </div>
-                            </td>";
-                    echo "</tr>";
-                }
-              }else {
-                echo "<tr>";
-                echo "<td><p>No results</p></td>";
-                echo "</tr>";
-              }
-              // Close the database connection again
-              mysqli_close($conn);
-          ?>
-        </tbody>
-      </table> -->
     </div>
   </div>
 </section>

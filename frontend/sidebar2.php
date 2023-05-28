@@ -38,9 +38,6 @@ $_SESSION['userpassword']
         <ul class="menu-list">
           <li>
             <div class="menu-container">
-              <button class="icon" id="menu">
-                <i class="fas fa-bars"></i>
-              </button>
             </div>
           </li>
           <li>
@@ -189,18 +186,19 @@ $_SESSION['userpassword']
           
       ?>
 
+<script>
+    const username = "<?php echo $_SESSION['username']; ?>";
+    const useremail = "<?php echo $_SESSION['email']; ?>";
+    const avatar = "<?php echo $_SESSION['avatar']; ?>";
+  </script>
 
 
-  <script src="../javascript/script.js"></script>
-    <script>
+  <script src="../javascript/script2.js"></script>
+    
+    <!-- <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-LLWL5N9CSM');
-  </script>
+  </script> -->
 
-  <script>
-    var username = "<?php echo $_SESSION['username']; ?>";
-    var useremail = "<?php echo $_SESSION['email']; ?>";
-    var avatar = "<?php echo $_SESSION['avatar']; ?>";
-  </script>
