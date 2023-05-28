@@ -1,4 +1,6 @@
 <?php
+session_start();
+
   // Get task details from database based on taskID
   $conn = mysqli_connect("localhost", "root", "", "getitdone");
   $taskID = $_POST["taskID"];
@@ -30,6 +32,9 @@
     ".$row['category']."
     &nbsp;&nbsp;&nbsp;";
 
+?>
+
+<?php
   $assignedBy = ""; // Variable to store the assigned by information
   
 
@@ -45,7 +50,7 @@
     // echo $assignee_id; //18
     // echo $assignedBy; //5
 
-    session_start();
+    
     $current_id = $_SESSION['id'];
     // echo $current_id; //5
 
@@ -102,14 +107,16 @@ echo "</div>
       
       if ($row2['currentStatus'] == 'Not Started') {
         echo "<button class='setInprogress'><img src='../images/inprog.png' style='vertical-align: middle;'>&nbsp;Set to in-progress</button>";
+      }else if ($row2['currentStatus'] == 'In progress') {
+        echo "<button class='setToPending'><img src='../images/pending.png' style='vertical-align: middle;'>&nbsp;Set to pending</button>";
       }
       
       echo "
-      <button class='setComplete'><img src='../images/complete.png' style='vertical-align: middle;'>&nbsp;Complete</button>
+      <button class='setComplete'><img src='../images/complete.png' style='vertical-align: middle;'>&nbsp;Completed</button>
       <button class='moveToTrash'><img src='../images/trash.png' style='vertical-align: middle;'>&nbsp;Move to trash</button>
      <button id='star-button' class='starred ".$row2['starred']."'>
      <i id='star-icon' class='fas fa-star' style='vertical-align: middle;'></i>&nbsp;
-     <span id='star-text' style='color: #141E61;'>Star</span>
+     <span id='star-text' style='color: #141E61;'>Favorites</span>
      </button>
       <button class='edit'><img src='../images/edit-task.png' style='vertical-align: middle;'>&nbsp;Edit Task</button>
 
@@ -127,9 +134,9 @@ echo "</div>
 var starText = document.getElementById('star-text');
 
 if (starButton.classList.contains('yes')) {
-  starText.textContent = 'Unstar';
+  starText.textContent = 'Remove from favorites';
 } else {
-  starText.textContent = 'Star';
+  starText.textContent = 'Add to favorites';
 }
 </script>
 
@@ -193,6 +200,47 @@ if (starButton.classList.contains('yes')) {
           success: function(response) {
             Swal.fire({
             title: "Task has been moved to trash",
+            icon: "success",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#F999B7"
+          }).then(() => {
+            // Reload the page or update the UI here
+            location.reload(); // Reload the page
+            // Or update the UI here
+          });
+      }
+        });
+      }
+    });
+  });
+</script>
+
+<!-- THIS IS SETTING TASK TO INPROGRESS -->
+<script>
+  $('.setToPending').on('click', function() {
+      // Get the task ID from the row
+      var taskID = $(this).closest('div#details-placeholder').find('.task-id').text();
+      console.log(taskID)
+
+      Swal.fire({
+      title: "Set this task to pending?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes.",
+      cancelButtonText: "No.",
+      confirmButtonColor: "#F999B7",
+      reverseButtons: true
+    }).then((result) => {
+      // If the user confirms the action, delete the data
+      if (result.isConfirmed) {
+        // Send an AJAX request to delete the task
+        $.ajax({
+          url: '../backend/setToPending.php',
+          method: 'POST',
+          data: { taskID: taskID },
+          success: function(response) {
+            Swal.fire({
+            title: "Task updated to pending!",
             icon: "success",
             confirmButtonText: "OK",
             confirmButtonColor: "#F999B7"

@@ -136,7 +136,7 @@ const openMenu = () => {
 
   let p_important = document.createElement("p");
   p_important.id = "p-important";
-  p_important.innerHTML = "Important";
+  p_important.innerHTML = "Favorites";
   important.style.width = "220px";
   important.style.justifyContent = "left";
   important.appendChild(p_important);

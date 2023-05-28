@@ -43,6 +43,8 @@
       
       if ($row['currentStatus'] == 'Not Started') {
         echo "<button class='setInprogress'><img src='../images/inprog.png' style='vertical-align: middle;'>&nbsp;Set to in-progress</button>";
+      }else if ($row['currentStatus'] == 'In Progress') {
+        echo "<button class='setToPending'><img src='../images/inprog.png' style='vertical-align: middle;'>&nbsp;Set to pending</button>";
       }
       
       echo "
@@ -170,6 +172,46 @@
           success: function(response) {
             Swal.fire({
             title: "Task has been moved to trash",
+            icon: "success",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#F999B7"
+          }).then(() => {
+            // Reload the page or update the UI here
+            location.reload(); // Reload the page
+            // Or update the UI here
+          });
+      }
+        });
+      }
+    });
+  });
+</script>
+
+<script>
+  $('.setToPending').on('click', function() {
+      // Get the task ID from the row
+      var taskID = $(this).closest('div#task-details-container').find('.task-id').text();
+      console.log(taskID)
+
+      Swal.fire({
+      title: "Set this task to pending?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes.",
+      cancelButtonText: "No.",
+      confirmButtonColor: "#F999B7",
+      reverseButtons: true
+    }).then((result) => {
+      // If the user confirms the action, delete the data
+      if (result.isConfirmed) {
+        // Send an AJAX request to delete the task
+        $.ajax({
+          url: '../backend/setToPending.php',
+          method: 'POST',
+          data: { taskID: taskID },
+          success: function(response) {
+            Swal.fire({
+            title: "Task updated to pending!",
             icon: "success",
             confirmButtonText: "OK",
             confirmButtonColor: "#F999B7"
